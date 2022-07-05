@@ -15,12 +15,12 @@ const MyMap = ({ props }) => {
   } = useContext(MyMapContext)
 
   const { isLoaded } = useJsApiLoader({
-    id: 'google-map-script',
-    googleMapsApiKey: process.env.GOOGLE_API_KEY,
+    // id: 'faf1d675e07babbe',
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_API_KEY,
     libraries
   })
 
-  if (!isLoaded) return <div className='w-full h-full'><h1>ERROR</h1></div>
+  if (!isLoaded) return <div className='w-full h-full flex items-center justify-center'><h1>Smth went wrong :c</h1></div>
 
   return (
     <GoogleMap
