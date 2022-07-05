@@ -5,7 +5,7 @@ import MyMapContext from "../context/MyMapContext"
 
 
 const SearchBar = () => {
-    const { setMovies, holdMovies, setSelectedInSearch, filteredMovies} = useContext(MyMapContext)
+    const { center, map, setMovies, holdMovies, setSelectedInSearch, filteredMovies} = useContext(MyMapContext)
     
     const [ openBar, setOpenBar ] = useState(false)
     const [ filterParams, setFilterParams ] = useState(null)
@@ -50,6 +50,12 @@ const SearchBar = () => {
         }
     }
 
+    const resetZoom = () => {
+        map.panTo(center)
+        map.setZoom(11)
+        setOpenBar(false)
+    }
+
     const reset = () => {
         setMovies(holdMovies)
         setOpenBar(false)
@@ -59,12 +65,16 @@ const SearchBar = () => {
         <div className={`absolute z-10 top-2 left-2 p-0.5 bg-white rounded-md ${openBar && 'w-48'}`}>
             <div className="relative p-1">
                 <span className="text-2xl font-bold cursor-pointer" onClick={() => setOpenBar(!openBar)}>
-                    🍔{openBar && 'Filter by...'}
+                    🍔{openBar && 'Options'}
                 </span>
                 <div className={`w-full capitalize ${openBar && 'p-2'}`}>
                 {
                     openBar &&
                     <>
+                        <Button className="w-full" variant="contained" onClick={() => resetZoom()}>
+                            Reset Zoom
+                        </Button>
+                        <span className="w-full font-bold text-xl">Filter by...</span>
                         <FormControl>
                         <RadioGroup name="filter by..." onChange={(event) => isChecked(event)}>
                         {

@@ -4,9 +4,10 @@ import MyMarker from './MyMarker'
 import MyMapContext from '../context/MyMapContext'
 const libraries = ['places']
 
-const MyMap = ({ center,  ...props }) => {
+const MyMap = ({ props }) => {
 
-  const { 
+  const {
+    center,
     map,
     setMap,
     movies,

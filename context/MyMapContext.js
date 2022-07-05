@@ -27,14 +27,15 @@ const MyMapContextProvider = ({ children }) => {
                 })
                 map.setZoom(17)
             } else {
-                // show locations
                 setMovies(res)
                 map.panTo(center)
+                map.setZoom(11)
             }
         }
     }, [selectedInSearch])
 
     const data = {
+        center,
         map,
         setMap,
         movies,
