@@ -4,6 +4,7 @@ const MyMapContext = createContext()
 
 const MyMapContextProvider = ({ children }) => {
 
+    const center = { lat: 37.7562, lng: -122.4412 }
     const [ map, setMap ] = useState(null)
     const [ movies, setMovies ] = useState(null)
     const [ holdMovies, setHoldMovies ] = useState(null)
@@ -20,10 +21,15 @@ const MyMapContextProvider = ({ children }) => {
             setFilteredMovies(true)
             if (res.length === 1) {
                 setMovies(res)
-                // pan to location
+                map.panTo({
+                    lat: res[0].latitude,
+                    lng: res[0].longitude
+                })
+                map.setZoom(17)
             } else {
-                setMovies(res)
                 // show locations
+                setMovies(res)
+                map.panTo(center)
             }
         }
     }, [selectedInSearch])

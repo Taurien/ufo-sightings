@@ -1,11 +1,22 @@
-import { useState } from "react"
+import { useContext, useState } from "react"
 import { Circle, InfoWindow, Marker } from "@react-google-maps/api"
+import MyMapContext from "../context/MyMapContext"
 
 const MyMarker = ({ clusterer, markerData }) => {
+    const { map } = useContext(MyMapContext)
+
     const [mapMarker, setMapMarker] = useState(null)
     const [showingInfoWindow, setShowingInfoWindow] = useState(false)
 
-    const onMarkerClick = () => setShowingInfoWindow(true)
+    const onMarkerClick = () => {
+        setShowingInfoWindow(true)
+
+        map.panTo({
+            lat: markerData.latitude,
+            lng: markerData.longitude
+        })
+        map.setZoom(17)
+    }
     const onInfoWindowClose = () => setShowingInfoWindow(false)
     const onLoad = (mapMarker) => setMapMarker(mapMarker)
 
