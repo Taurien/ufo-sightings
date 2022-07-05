@@ -20,6 +20,7 @@ export default function Home() {
 
   useEffect(() => {
     fetchData()
+    console.log(process.env.TEST_ENVI, NEXT_PUBLIC_TEST_ENVI)
   }, [])
   
   return (

@@ -15,7 +15,7 @@ const MyMap = ({ props }) => {
   } = useContext(MyMapContext)
 
   const { isLoaded } = useJsApiLoader({
-    // id: 'faf1d675e07babbe',
+    id: 'faf1d675e07babbe',
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_API_KEY,
     libraries
   })
