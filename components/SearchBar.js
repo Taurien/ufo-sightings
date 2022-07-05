@@ -1,11 +1,11 @@
 import { useContext, useEffect, useState } from "react"
-import { Autocomplete, TextField, FormControl, RadioGroup, FormControlLabel, Radio } from '@mui/material'
+import { Autocomplete, TextField, FormControl, RadioGroup, FormControlLabel, Radio, Button } from '@mui/material'
 
 import MyMapContext from "../context/MyMapContext"
 
 
 const SearchBar = () => {
-    const { holdMovies, setSelectedInSearch } = useContext(MyMapContext)
+    const { holdMovies, setSelectedInSearch, filteredMovies} = useContext(MyMapContext)
     
     const [ openBar, setOpenBar ] = useState(false)
     const [ filterParams, setFilterParams ] = useState(null)
@@ -53,7 +53,7 @@ const SearchBar = () => {
     return (
         <div className={`absolute z-10 top-2 left-2 p-0.5 bg-white rounded-md ${openBar && 'w-48'}`}>
             <div className="relative p-1">
-                <span className="text-2xl font-bold" onClick={() => setOpenBar(!openBar)}>
+                <span className="text-2xl font-bold cursor-pointer" onClick={() => setOpenBar(!openBar)}>
                     🍔{openBar && 'Filter by...'}
                 </span>
                 <div className={`w-full capitalize ${openBar && 'p-2'}`}>
@@ -74,7 +74,6 @@ const SearchBar = () => {
                         }
                         </RadioGroup>
                         </FormControl>
-
                         {
                             checkedParams &&
                             <Autocomplete
@@ -84,6 +83,7 @@ const SearchBar = () => {
                                 onChange={(event) => selectedOnAutoComplete(event)}
                             />
                         }
+                        <Button className="w-full" disabled={!filteredMovies} variant="contained">Show All</Button>
                     </>
                 }
                 </div>
