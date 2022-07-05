@@ -20,16 +20,19 @@ const MyMapContextProvider = ({ children }) => {
             console.log(res)
             setFilteredMovies(true)
             if (res.length === 1) {
+                console.log(res)
                 setMovies(res)
-                map.panTo({
-                    lat: res[0].latitude,
-                    lng: res[0].longitude
-                })
-                map.setZoom(17)
+                setTimeout(() => {
+                    map.panTo({
+                        lat: res[0].latitude,
+                        lng: res[0].longitude
+                    })
+                    map.setZoom(17)
+                }, 500)
             } else {
                 setMovies(res)
                 map.panTo(center)
-                map.setZoom(11)
+                map.setZoom(12)
             }
         }
     }, [selectedInSearch])
