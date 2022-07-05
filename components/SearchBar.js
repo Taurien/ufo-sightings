@@ -5,7 +5,7 @@ import MyMapContext from "../context/MyMapContext"
 
 
 const SearchBar = () => {
-    const { holdMovies, setSelectedInSearch, filteredMovies} = useContext(MyMapContext)
+    const { setMovies, holdMovies, setSelectedInSearch, filteredMovies} = useContext(MyMapContext)
     
     const [ openBar, setOpenBar ] = useState(false)
     const [ filterParams, setFilterParams ] = useState(null)
@@ -50,6 +50,11 @@ const SearchBar = () => {
         }
     }
 
+    const reset = () => {
+        setMovies(holdMovies)
+        setOpenBar(false)
+    }
+
     return (
         <div className={`absolute z-10 top-2 left-2 p-0.5 bg-white rounded-md ${openBar && 'w-48'}`}>
             <div className="relative p-1">
@@ -83,7 +88,9 @@ const SearchBar = () => {
                                 onChange={(event) => selectedOnAutoComplete(event)}
                             />
                         }
-                        <Button className="w-full" disabled={!filteredMovies} variant="contained">Show All</Button>
+                        <Button className="w-full" disabled={!filteredMovies} variant="contained" onClick={() => reset()}>
+                            Show All
+                        </Button>
                     </>
                 }
                 </div>
