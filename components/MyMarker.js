@@ -81,4 +81,6 @@ const MyMarker = React.forwardRef((props, ref) => {
     )
 })
 
+MyMarker.displayName = 'MyMarker';
+
 export default MyMarker
