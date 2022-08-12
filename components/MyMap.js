@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from 'react'
 import { GoogleMap, useJsApiLoader, Marker, MarkerClusterer } from '@react-google-maps/api'
+import Spiderfy from './Spiderfy.js'
 import MyMarker from './MyMarker'
 import MyMapContext from '../context/MyMapContext'
 const libraries = ['places']
@@ -16,7 +17,7 @@ const MyMap = ({ props }) => {
 
   const { isLoaded } = useJsApiLoader({
     id: 'faf1d675e07babbe',
-    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_API_KEY,
+    // googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_API_KEY,
     libraries
   })
 
@@ -38,19 +39,16 @@ const MyMap = ({ props }) => {
       mapTypeControlOptions: { position: 6 },
     }}
   >
-    {/* { map && <Marker position={center} /> } */}
     { map &&
-      <MarkerClusterer>
-      {(clusterer) =>
-        movies?.map((marker, index) => (
+      <Spiderfy>
+        {movies?.map((marker, index) => (
           <MyMarker
-            clusterer={clusterer}
-            markerData={marker}
+            // clusterer={clusterer}
+            {...marker}
             key={index}
           />
-        )
-      )}
-      </MarkerClusterer>
+        ))}
+      </Spiderfy>
     }
   </GoogleMap>
   )
