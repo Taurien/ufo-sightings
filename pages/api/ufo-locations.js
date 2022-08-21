@@ -1,7 +1,6 @@
 const { MongoClient } = require("mongodb")
 
-
-export default async (req, res) => {
+export default async function handler(req, res) {
   const { query } = req
   const { limit, year, ...restQuery } = query
   const queryKeys = Object.keys(query)

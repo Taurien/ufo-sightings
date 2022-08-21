@@ -105,7 +105,7 @@ const SearchBar = () => {
 
             <div className=" grid grid-flow-row gap-1">
               <div className="grid grid-flow-row font-bold text-xl text-center">
-                <p className="">You're</p>
+                <p className="">You&apos;re</p>
                 <p className="">
                   {
                     selectedCountry

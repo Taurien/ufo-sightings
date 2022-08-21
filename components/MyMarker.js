@@ -62,7 +62,7 @@ const MyMarker = React.forwardRef((props, ref) => {
             <p><span className="font-bold">DateTime:</span> {props.datetime}</p>
             <p><span className="font-bold">Duration:</span> {props['duration (hours/min)']}</p>
             <p><span className="font-bold">Shape:</span> {props.shape}</p>
-            <p className="mt-2"><span className="font-bold">Comments:</span> "<i>{props.comments}</i>"</p>
+            <p className="mt-2"><span className="font-bold">Comments:</span> &ldquo;<i>{props.comments}</i>&ldquo;</p>
             <p className="mt-2 capitalize"><span className="font-bold">Location:</span> {props.city}</p>
           </div>
         </InfoWindow>

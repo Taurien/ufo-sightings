@@ -34,7 +34,7 @@ const EntryModal = () => {
       entryModal  &&
       <div className={`max-w-md absolute z-10 top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2 bg-white rounded p-6`}>
         <div className=' grid grid-flow-row gap-2 justify-items-center'>
-          <p className='text-lg font-bold'>Look UFO's in</p>
+          <p className='text-lg font-bold'>Look UFO&apos;s in</p>
           <div className='flex flex-wrap justify-center'>
             {
               Object.keys(countries).map((country, index) => (
@@ -44,7 +44,7 @@ const EntryModal = () => {
                   onClick={() => panToCountry(country)}
                 >
                   <div className='aspect-square relative w-9 mr-2'>
-                    <Image src={countries[country].flag} layout='fill' objectFit='contain' />
+                    <Image src={countries[country].flag} alt={`${countries[country].name} flag`} title={`${countries[country].name} flag`} layout='fill' objectFit='contain' />
                   </div>
                   <span className='w-max'>{countries[country].name}</span>
                 </button>
