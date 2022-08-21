@@ -1,5 +1,5 @@
 {
-  "name": "movies-map",
+  "name": "ufo-sightings",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -13,11 +13,15 @@
     "@emotion/styled": "^11.9.3",
     "@mui/material": "^5.8.7",
     "@react-google-maps/api": "^2.12.0",
+    "@reduxjs/toolkit": "^1.8.4",
+    "@uiball/loaders": "^1.2.6",
+    "mongodb": "^4.8.1",
     "next": "12.2.0",
-    "node-geocoder": "^4.1.0",
+    "next-redux-wrapper": "^7.0.5",
     "npm-overlapping-marker-spiderfier": "^1.0.3",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "react-redux": "^8.0.2"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.7",

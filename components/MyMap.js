@@ -1,33 +1,33 @@
-import { useContext, useEffect, useState } from 'react'
-import { GoogleMap, useJsApiLoader, Marker, MarkerClusterer } from '@react-google-maps/api'
+import { useContext } from 'react'
+import { useSelector } from 'react-redux'
+import { GoogleMap, useJsApiLoader } from '@react-google-maps/api'
+
+import MapContext from '../context/MapContext'
 import Spiderfy from './Spiderfy.js'
 import MyMarker from './MyMarker'
-import MyMapContext from '../context/MyMapContext'
+
 const libraries = ['places']
+
 
 const MyMap = ({ props }) => {
 
-  const {
-    center,
-    map,
-    setMap,
-    movies,
-    filteredMovies
-  } = useContext(MyMapContext)
+  const { center, ufoLocations } = useSelector((state) => state.map)
+
+  const { map, setMap } = useContext(MapContext)
 
   const { isLoaded } = useJsApiLoader({
     id: 'faf1d675e07babbe',
-    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_API_KEY,
+    googleMapsApiKey: process.env.NEXT_PUBLIC_ENVIRONMENT ? '' : process.env.NEXT_PUBLIC_GOOGLE_API_KEY,
     libraries
   })
 
-  if (!isLoaded) return <div className='w-full h-full flex items-center justify-center'><h1>Smth went wrong :c</h1></div>
+  if (!isLoaded) return <div className='w-full h-full flex items-center justify-center'><h1>Loading Map...</h1></div>
 
   return (
     <GoogleMap
     mapContainerClassName=' w-full h-full'
     center={center}
-    zoom={11}
+    zoom={2}
     onLoad={map => {
       setTimeout(() => {
         setMap(map)
@@ -41,9 +41,8 @@ const MyMap = ({ props }) => {
   >
     { map &&
       <Spiderfy>
-        {movies?.map((marker, index) => (
+        {ufoLocations.active?.map((marker, index) => (
           <MyMarker
-            // clusterer={clusterer}
             {...marker}
             key={index}
           />

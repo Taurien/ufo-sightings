@@ -9,8 +9,8 @@ const ContainerBlock = ({ children, customMeta, ...props }) => {
   const innerHeight = useInnerHeight()
 
   const meta = {
-    title: 'Movies-Map',
-    description: `Movies in SF`,
+    title: 'UFO Sightings',
+    description: `UFO sights around the world`,
     type: 'website',
     ...customMeta,
   }

@@ -1,86 +1,86 @@
-import React from "react";
-import { useContext, useState } from "react"
+import React, { useState } from "react"
 import { Circle, InfoWindow, Marker } from "@react-google-maps/api"
-import MyMapContext from "../context/MyMapContext"
+
+import MapContext from "../context/MapContext"
 
 
 const MyMarker = React.forwardRef((props, ref) => {
 
-    const [mapMarker, setMapMarker] = useState(null)
-    const [showingInfoWindow, setShowingInfoWindow] = useState(false)
+  const [mapMarker, setMapMarker] = useState(null)
+  const [showingInfoWindow, setShowingInfoWindow] = useState(false)
 
-    // const onMarkerClick = () => {
-    //   // 
-    // }
-    
-    const onInfoWindowClose = () => setShowingInfoWindow(false)
-    const onLoad = (mapMarker) => setMapMarker(mapMarker)
+  // const onMarkerClick = () => {
+  //   // 
+  // }
+  
+  const onInfoWindowClose = () => setShowingInfoWindow(false)
+  const onLoad = (mapMarker) => setMapMarker(mapMarker)
 
-    const circleOptions = {
-        strokeOpacity: 0.6,
-        strokeWeight: 2,
-        clickable: false,
-        draggable: false,
-        editable: false,
-        visible: true,
-        strokeColor: "#fca311",
-        // fillColor: "#",
-    }
+  const circleOptions = {
+    strokeOpacity: 0.5,
+    strokeWeight: 3,
+    clickable: false,
+    draggable: false,
+    editable: false,
+    visible: true,
+    strokeColor: "#8BC34A",
+    fillColor: "#8BC34A",
+  }
 
-    return (
-        <Marker
-            {...props}
-            ref={ref}
-            showingInfoWindow={showingInfoWindow}
-            setShowingInfoWindow={setShowingInfoWindow}
-            onLoad={onLoad}
-            position={{
-                lat: +props.latitude,
-                lng: +props.longitude
-            }}
-            clickable
-            // onClick={onMarkerClick}
-            icon={{
-                url: `/camera.svg`,
-                origin: new window.google.maps.Point(0, 0),
-                anchor: new window.google.maps.Point(15, 15),
-                scaledSize: new window.google.maps.Size(30, 30),
-            }}
+  return (
+    <Marker
+      {...props}
+      ref={ref}
+      showingInfoWindow={showingInfoWindow}
+      setShowingInfoWindow={setShowingInfoWindow}
+      onLoad={onLoad}
+      position={{
+        lat: +props.latitude,
+        lng: +props.longitude
+      }}
+      clickable
+      // onClick={onMarkerClick}
+      icon={{
+        url: `/assets/ovni.svg`,
+        origin: new window.google.maps.Point(0, 0),
+        anchor: new window.google.maps.Point(20, 20),
+        scaledSize: new window.google.maps.Size(40, 40),
+      }}
+    >
+      {
+        showingInfoWindow &&
+        <>
+        <InfoWindow
+          position={{
+            lat: props.latitude+0.0003,
+            lng: props.longitude
+          }}
+          onCloseClick={onInfoWindowClose}
         >
-            {
-                showingInfoWindow &&
-                <>
-                <InfoWindow
-                    position={{
-                        lat: props.latitude+0.0003,
-                        lng: props.longitude
-                    }}
-                    onCloseClick={onInfoWindowClose}
-                >
-                    <div className="">
-                        <p className="mb-2 text-base font-bold">📼 <i>{`"${props.title}" (${props.year})`}</i></p>
-                        <p><span className="font-bold">Directed by:</span> <i>{props.director}</i></p>
-                        <p><span className="font-bold">Written by:</span> <i>{props.writer}</i></p>
-                        <p><span className="font-bold">Produced by:</span> <i>{props.production}</i></p>
-                        <p><span className="font-bold">Distributed by:</span> <i>{props.distributor}</i></p>
-                        <p className="mt-2"><span className="font-bold">Location:</span> {props.locations}</p>
-                    </div>
-                </InfoWindow>
-                
-                </>
-            }
-            <Circle
-                center={{
-                    lat: +props.latitude,
-                    lng: +props.longitude
-                }}
-                radius={100}
-                options={circleOptions}
-            />
-        </Marker>
-    )
+          <div className="">
+            <p className="mb-2 text-base font-bold">🛸</p>
+            <p><span className="font-bold">DateTime:</span> {props.datetime}</p>
+            <p><span className="font-bold">Duration:</span> {props['duration (hours/min)']}</p>
+            <p><span className="font-bold">Shape:</span> {props.shape}</p>
+            <p className="mt-2"><span className="font-bold">Comments:</span> "<i>{props.comments}</i>"</p>
+            <p className="mt-2 capitalize"><span className="font-bold">Location:</span> {props.city}</p>
+          </div>
+        </InfoWindow>
+        
+        </>
+      }
+      <Circle
+        center={{
+          lat: +props.latitude,
+          lng: +props.longitude
+        }}
+        radius={300}
+        options={circleOptions}
+      />
+    </Marker>
+  )
 })
 
-MyMarker.displayName = 'MyMarker';
+MyMarker.displayName = 'MyMarker'
 
 export default MyMarker

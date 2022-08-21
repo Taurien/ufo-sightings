@@ -1,22 +1,22 @@
-import React from "react";
-import { MapContext } from "@react-google-maps/api";
-import MyMapContext from "../context/MyMapContext";
+import React from "react"
+import { MapContext as GmapContext } from "@react-google-maps/api"
+import MapContext from "../context/MapContext"
 
 
 class Spiderfy extends React.Component {
 
-  static contextType = MyMapContext
+  static contextType = MapContext
 
   constructor(props) {
-    super(props);
-    const oms = require(`npm-overlapping-marker-spiderfier/lib/oms.min`);
+    super(props)
+    const oms = require(`npm-overlapping-marker-spiderfier/lib/oms.min`)
 
     this.oms = new oms.OverlappingMarkerSpiderfier(
-      MapContext._currentValue, // 1*
+      GmapContext._currentValue,
       {}
-    );
+    )
 
-    this.markerNodeMounted = this.markerNodeMounted.bind(this);
+    this.markerNodeMounted = this.markerNodeMounted.bind(this)
   }
 
   async markerNodeMounted(ref) {
@@ -29,19 +29,19 @@ class Spiderfy extends React.Component {
           lat: ref.props.latitude,
           lng: ref.props.longitude
         })
-        this.context.map.setZoom(17)
+        this.context.map.setZoom(15)
 
         ref.props.setShowingInfoWindow(!ref.props.showingInfoWindow)
 
-      });
-    }, 2000);
+      })
+    }, 2000)
   }
 
   render() {
     return React.Children.map(this.props.children, child =>
       React.cloneElement(child, { ref: this.markerNodeMounted })
-    );
+    )
   }
 }
 
-export default Spiderfy;
+export default Spiderfy

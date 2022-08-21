@@ -1,12 +1,13 @@
-import { MyMapContextProvider } from '../context/MyMapContext'
+import { reduxWrapper } from '../redux/store'
+import { MapContextProvider } from '../context/MapContext'
 import '../styles/globals.css'
 
 function MyApp({ Component, pageProps }) {
   return (
-    <MyMapContextProvider>
+    <MapContextProvider>
       <Component {...pageProps} />
-    </MyMapContextProvider>
+    </MapContextProvider>
   )
 }
 
-export default MyApp
+export default reduxWrapper.withRedux(MyApp)
