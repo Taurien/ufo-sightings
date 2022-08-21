@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { GoogleMap, useJsApiLoader } from '@react-google-maps/api'
 
@@ -13,7 +13,11 @@ const MyMap = ({ props }) => {
 
   const { center, ufoLocations } = useSelector((state) => state.map)
 
-  const { map, setMap } = useContext(MapContext)
+  const { loader, setLoader, map, setMap } = useContext(MapContext)
+
+  useEffect(() => {
+    if (ufoLocations.active) setLoader(false); console.log(ufoLocations.active)
+  }, [ufoLocations])
 
   const { isLoaded } = useJsApiLoader({
     id: 'faf1d675e07babbe',
@@ -33,21 +37,25 @@ const MyMap = ({ props }) => {
         setMap(map)
       }, 1000)
     }}
-    options={{
-      streetViewControl: false,
-      fullscreenControl: false,
-      mapTypeControlOptions: { position: 6 },
-    }}
+    options={{streetViewControl: false, fullscreenControl: false, mapTypeControl: false,}}
   >
-    { map &&
-      <Spiderfy>
-        {ufoLocations.active?.map((marker, index) => (
-          <MyMarker
-            {...marker}
-            key={index}
-          />
-        ))}
-      </Spiderfy>
+    { 
+      map &&
+      <>
+      {
+        // ufoLocations?.active && 
+        // <Spiderfy>
+        //   {
+        //     ufoLocations.active.map((marker, index) => (
+        //     <MyMarker
+        //         {...marker}
+        //         key={index}
+        //       />
+        //     ))
+        //   }
+        // </Spiderfy>
+      }
+      </>
     }
   </GoogleMap>
   )

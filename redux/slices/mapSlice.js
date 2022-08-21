@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 
 const zeroStart = { lat: 0, lng: 0 }
 
@@ -20,6 +20,18 @@ const initialState = {
   ufoLocations: { active: null, hold: null},
 }
 
+export const fetchLocations = createAsyncThunk(
+  'map/fetchLocations',
+  async (query) => {
+    let url = `api/ufo-locations?`
+    const queryStrArray = (obj) => url + Object.keys(obj).map(uniqueKey => `${uniqueKey}=${obj[uniqueKey]}`).join('&')
+    const response = await fetch(queryStrArray(query))
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+    const data = await response.json();
+    return data
+  }
+)
+
 export const mapSlice = createSlice({
   name: 'map',
   initialState,
@@ -38,6 +50,15 @@ export const mapSlice = createSlice({
       state.ufoLocations.active = null
     },
   },
+  extraReducers(builder) {
+    builder.addCase(
+      fetchLocations.fulfilled,
+      (state, action) => {
+        state.ufoLocations.active = action.payload.result
+        // state.ufoLocations.hold = ['it','works'] 
+      }
+    )
+  }
 })
 
 export const {

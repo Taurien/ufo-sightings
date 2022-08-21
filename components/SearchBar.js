@@ -18,8 +18,8 @@ const SearchBar = () => {
 
   const nations = arrayOptions(countries, 'name')
   
-  const [ selectedNation, setSelectedNation ] = useState('')
-  const [ selectedState, setSelectedIState ] = useState('')
+  const [ selectedNation, setSelectedNation ] = useState(null)
+  const [ selectedState, setSelectedIState ] = useState(null)
   const [ selectedYear, setSelectedYear ] = useState(null)
   const [ selectedShape, setSelectedShape ] = useState(null)
   
@@ -38,8 +38,8 @@ const SearchBar = () => {
   }
 
   const clearForm = () => {
-    setSelectedNation(selectedCountry ? selectedCountry : '')
-    setSelectedIState('')
+    setSelectedNation(selectedCountry ? selectedCountry : null)
+    setSelectedIState(null)
     setSelectedYear(null)
     setSelectedShape(null)
     setNationAutoComp(false)
@@ -59,9 +59,7 @@ const SearchBar = () => {
 
   const submitHanlder = (e) => {
     e.preventDefault()
-    setOpenBar(false)
-    setLoader(true)
-
+    
     let state
     const territory = territorySplit(selectedState)
 
@@ -82,14 +80,20 @@ const SearchBar = () => {
         state = territory
     }
 
-    const query = {
-      country : selectedCountry || selectedNation,
-      state: state,
-      year: selectedYear,
-      shape: selectedShape
+    const query = {}
+    if (selectedCountry || selectedNation) query.country = selectedCountry || selectedNation
+    if (state) query.state = state
+    if (selectedYear) query.year = selectedYear
+    if (selectedShape) query.shape = selectedShape
+    // if (limit) query.limit = limit
+
+    if (Object.keys(query).length === 0) console.warn('empty query') 
+    else {
+      setOpenBar(false)
+      setLoader(true)
+      setSelectedInSearch(query)
+      clearForm()
     }
-    setSelectedInSearch(query)
-    clearForm()
   }
 
   return (

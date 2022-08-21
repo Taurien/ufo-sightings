@@ -6,12 +6,15 @@ import { useInnerHeight } from '../hooks/innerHeight'
 
 const ContainerBlock = ({ children, customMeta, ...props }) => {
 
+  const router = useRouter()
+
   const innerHeight = useInnerHeight()
 
   const meta = {
-    title: 'UFO Sightings',
-    description: `UFO sights around the world`,
+    title: 'UFO Sightings 🛸',
+    description: `UFO sights around the world. Based on N.U.F.O.R.C data`,
     type: 'website',
+    image: '',
     ...customMeta,
   }
 
@@ -26,12 +29,32 @@ const ContainerBlock = ({ children, customMeta, ...props }) => {
 
         <meta name="author" content="Michel Cruz" />
         <meta name='description' content={meta.description} />
-        <meta name="keywords" content="michel,cruz,michel cruz,taurien,portfolio,web,ux,ui,graphic,design,graphic design,designer,developer,web developer,frontend,backend,front-end,back-end,fullstack,full-stack,javascript,freelance"/>
+        <meta name="keywords" content="ufo,ovni,ovnis,nuforc,sightings"/>
 
         {/* Open Graph */}
         <meta property='og:type' content={meta.type} />
         <meta property='og:title' content={meta.title} />
         <meta property='og:description' content={meta.description} />
+        <meta property='og:type' content={meta.type} />
+        <meta property='og:site_name' content={meta.title} />
+
+        {/* <meta
+          property='og:url'
+          // content={`https://${router.asPath}`}
+        />
+        
+        <link
+          rel='canonical'
+          // href={`https://${router.asPath}`}
+        /> */}
+
+        {/* Twitter */}
+        <meta name='twitter:image' content={meta.image} />
+        <meta name='twitter:title' content={meta.title} />
+        <meta name='twitter:description' content={meta.description} />
+        <meta name='twitter:card' content='summary_large_image' />
+        <meta name='twitter:site' content='@michelcruz_me' />
+
       </Head>
       
       <main
