@@ -11,7 +11,7 @@ const SearchBar = () => {
   const dispatch = useDispatch()
   const { origin, countries, years, shapes, states, provinces, selectedCountry } = useSelector((state) => state.map)
 
-  const { loader, setLoader, map, setEntryModal, openBar, setOpenBar, customSearch, setCustomSearch, setSelectedInSearch } = useContext(MapContext)
+  const { statusModal,  map, setEntryModal, openBar, setOpenBar, customSearch, setCustomSearch, setSelectedInSearch } = useContext(MapContext)
 
   const territorySplit = (str) => str && str.split(' ')[0].toLowerCase()
   const arrayOptions = (obj, subParam ) => Object.keys(obj).map(elm => subParam ? `${elm.toUpperCase()} - ${obj[elm][subParam]}` : `${elm.toUpperCase()} - ${obj[elm]}`)
@@ -90,7 +90,6 @@ const SearchBar = () => {
     if (Object.keys(query).length === 0) console.warn('empty query') 
     else {
       setOpenBar(false)
-      setLoader(true)
       setSelectedInSearch(query)
       clearForm()
     }
@@ -99,7 +98,7 @@ const SearchBar = () => {
   return (
     <div className={`absolute z-10 top-2 left-2  p-0.5 bg-white rounded-md ${openBar && 'w-60 mobile:w-48 overflow-y-auto'} ${(selectedCountry || customSearch) && openBar && 'bottom-1/4'}`}>
       <div className="relative p-1">
-        <span className="text-2xl font-bold cursor-pointer"onClick={() => !loader && setOpenBar(!openBar)}>
+        <span className="text-2xl font-bold cursor-pointer"onClick={() => !statusModal && setOpenBar(!openBar)}>
           🛸{openBar && 'Options'}
         </span>
         <div className={`w-full grid grid-flow-row gap-2 ${openBar && 'p-2'}`}>

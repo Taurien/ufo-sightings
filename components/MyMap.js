@@ -13,11 +13,7 @@ const MyMap = ({ props }) => {
 
   const { center, ufoLocations } = useSelector((state) => state.map)
 
-  const { loader, setLoader, map, setMap } = useContext(MapContext)
-
-  useEffect(() => {
-    if (ufoLocations.active) setLoader(false); console.log(ufoLocations.active)
-  }, [ufoLocations])
+  const { map, setMap } = useContext(MapContext)
 
   const { isLoaded } = useJsApiLoader({
     id: 'faf1d675e07babbe',

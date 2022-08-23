@@ -9,30 +9,37 @@ const MapContext = createContext()
 const MapContextProvider = ({ children }) => {
 
   const dispatch = useDispatch()
-  const { ufoLocations } = useSelector((state) => state.map)
+  const { status } = useSelector((state) => state.map)
 
-  const [ loader, setLoader ] = useState(false)
   const [ map, setMap ] = useState(null)
   const [ entryModal, setEntryModal ] = useState(true)
   const [ openBar, setOpenBar ] = useState(false)
   const [ customSearch, setCustomSearch ] = useState(false)
   const [ selectedInSearch, setSelectedInSearch ] = useState(null)
+  const [ statusModal, setstatusModal ] = useState(false)
 
 
   useEffect(() => {
-    if (selectedInSearch) dispatch(fetchLocations(selectedInSearch))
-
-    // if (ufoLocations.hold) setLoader(false)
-
+    if (selectedInSearch) {
+      // console.log('seacrh', selectedInSearch, status)
+      dispatch(fetchLocations(selectedInSearch))
+      setSelectedInSearch(null)
+    }
   }, [selectedInSearch])
+  
+  useEffect(() => {
+    if (status.fetching) setstatusModal(true)
+    if (!status.fetching) setTimeout(() => { setstatusModal(false) }, 2500)
+  }, [status])
+  
 
   const data = {
-    loader,setLoader,
     map, setMap,
     entryModal, setEntryModal,
     openBar, setOpenBar,
     customSearch, setCustomSearch,
     selectedInSearch, setSelectedInSearch,
+    statusModal, setstatusModal
   }
 
   return (

@@ -1,4 +1,5 @@
 import { useContext, useEffect } from 'react'
+import { useSelector } from 'react-redux'
 
 import MapContext from '../context/MapContext'
 import ContainerBlock from './ContainerBlock'
@@ -6,11 +7,13 @@ import Loader from '../components/Loader'
 import EntryModal from '../components/EntryModal'
 import SearchBar from '../components/SearchBar'
 import MyMap from '../components/MyMap'
+import StatusModal from '../components/StatusModal'
 
 
 export default function Home() {
-  
-  const { loader } = useContext(MapContext)
+
+  const { status } = useSelector((state) => state.map)
+  const { statusModal } = useContext(MapContext)
   
   return (
     <ContainerBlock className='relative w-screen'>
@@ -21,7 +24,9 @@ export default function Home() {
       </div>
 
       <EntryModal />
-      { loader && <Loader /> }
+      { statusModal && <StatusModal fetching={status.fetching} msg={status.response} /> }
+      
+      
       
       <MyMap/>
     </ContainerBlock>

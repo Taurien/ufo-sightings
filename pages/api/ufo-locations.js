@@ -30,12 +30,11 @@ export default async function handler(req, res) {
     const mongoResult = await locations.aggregate(mongoPipeline).toArray()
     await client.close()
 
-    if (mongoResult.length === 0) return res.status(404).json({ msg: `There are no UFOs with the given values.`, query })
-    return res.status(200).json({ msg: `Success.`, qty: { request: mongoLimit, retured: mongoResult.length }, mongoResult })
-    // return res.status(200).json({ msg: `Success.`, query, mongoPipeline })
+    if (mongoResult.length === 0) return res.status(404).send({ success: false, msg: `There are no UFO's with the given values.`, query })
+    return res.status(200).send({ success: true, msg: `Success.`, qty: { request: mongoLimit, retured: mongoResult.length }, data: mongoResult })
   }
   catch (err) {
-    return res.status(404).json({ msg: 'error', err })
+    return res.status(404).send({ success: false, msg: 'Error', err })
   }
 }
 
