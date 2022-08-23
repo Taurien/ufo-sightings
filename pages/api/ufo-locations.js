@@ -17,14 +17,14 @@ export default async function handler(req, res) {
     const mongoLimit = +limit || 10
 
     // [
-    //   { $search: { index: 'ufo-query-idx', text: { query: year, path: 'date posted' } } },
+    //   { $search: { index: 'ufo-query-idx', text: { query: year, path: 'datetime' } } },
     //   { $match: restQuery },
     //   { $sample: {size: mongoLimit} }
     // ]
     const mongoPipeline = []
     
     if (Object.keys(restQuery).length !== 0) mongoPipeline.unshift({ $match: restQuery })
-    if (year) mongoPipeline.unshift({ $search: { index: 'ufo-query-idx', text: { query: year, path: 'date posted' } } })
+    if (year) mongoPipeline.unshift({ $search: { index: 'ufo-query-idx', text: { query: year, path: 'datetime' } } })
     mongoPipeline.push({ $sample: {size: mongoLimit} })
     
     const mongoResult = await locations.aggregate(mongoPipeline).toArray()
