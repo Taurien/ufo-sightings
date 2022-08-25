@@ -1,14 +1,16 @@
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react'
+import { memo, useEffect, useMemo, useState } from 'react'
 import { useInnerHeight } from '../hooks/innerHeight'
 
 
 const ContainerBlock = ({ children, customMeta, ...props }) => {
+  console.log('container')
+  
+  // const innerHeight = useMemo(() => useInnerHeight(), [])
+  // const innerHeight = useInnerHeight()
 
-  const router = useRouter()
-
-  const innerHeight = useInnerHeight()
+  // console.log(innerHeight)
 
   const meta = {
     title: 'UFO Sightings 🛸',
@@ -58,8 +60,9 @@ const ContainerBlock = ({ children, customMeta, ...props }) => {
       </Head>
       
       <main
-        style={{ height: `${innerHeight}px` }}
-        className={`font-work_sans`} {...props}
+        // style={{ height: innerHeight !== 0 ? `${innerHeight}px` : '100vh' }}
+        // style={{ height: '100vh' }}
+         {...props}
       >
         {children}
       </main>
