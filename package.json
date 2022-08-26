@@ -19,6 +19,7 @@
     "next": "12.2.0",
     "next-redux-wrapper": "^7.0.5",
     "npm-overlapping-marker-spiderfier": "^1.0.3",
+    "overlapping-marker-spiderfier": "^1.1.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-redux": "^8.0.2"

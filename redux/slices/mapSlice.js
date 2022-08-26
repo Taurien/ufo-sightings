@@ -39,10 +39,10 @@ export const mapSlice = createSlice({
   reducers: {
     setSelectedCountry: (state, action) => {
       state.selectedCountry = action.payload.code.toLowerCase()
-      state.center = action.payload.coords
+      // state.center = action.payload.coords
     },
     resetSlice: (state, action) => {
-      state.center = zeroStart
+      // state.center = zeroStart
       state.selectedCountry = null
       state.ufoLocations.hold = { ...state.ufoLocations.active}
       state.ufoLocations.active = null

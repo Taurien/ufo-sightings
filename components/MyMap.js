@@ -1,15 +1,16 @@
-import { useContext, useEffect } from 'react'
+import { memo, useCallback, useContext, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { GoogleMap, useJsApiLoader } from '@react-google-maps/api'
 
 import MapContext from '../context/MapContext'
-import Spiderfy from './Spiderfy.js'
-import MyMarker from './MyMarker'
+import FunctSpiderfy from './Spiderfy-funct'
 
 const libraries = ['places']
 
 
-const MyMap = ({ props }) => {
+const MyMap = memo((props) => {
+
+  // console.log('map compo')
 
   const { center, ufoLocations } = useSelector((state) => state.map)
 
@@ -25,36 +26,22 @@ const MyMap = ({ props }) => {
 
   return (
     <GoogleMap
-    mapContainerClassName=' w-full h-full'
-    center={center}
-    zoom={2}
-    onLoad={map => {
-      setTimeout(() => {
-        setMap(map)
-      }, 1000)
-    }}
-    options={{streetViewControl: false, fullscreenControl: false, mapTypeControl: false,}}
-  >
-    { 
-      map &&
-      <>
+      mapContainerClassName=' w-full h-full'
+      center={center}
+      zoom={2}
+      onLoad={map => {
+        // setTimeout(() => {
+          setMap(map)
+        // }, 1000)
+      }}
+      options={{streetViewControl: false, fullscreenControl: false, mapTypeControl: false,}}
+    >
       {
-        // ufoLocations?.active && 
-        // <Spiderfy>
-        //   {
-        //     ufoLocations.active.map((marker, index) => (
-        //     <MyMarker
-        //         {...marker}
-        //         key={index}
-        //       />
-        //     ))
-        //   }
-        // </Spiderfy>
+        map && ufoLocations?.active && 
+        <FunctSpiderfy mapInstance={map} locations={ufoLocations.active}/>
       }
-      </>
-    }
-  </GoogleMap>
+    </GoogleMap>
   )
-}
+})
 
 export default MyMap
