@@ -5,7 +5,7 @@ import { useSelector } from "react-redux"
 import MapContext from "../context/MapContext"
 import UfoMarker from "./UfoMarker"
 
-const FunctSpiderfy = memo((props) => {
+const FunctSpiderfy = (props) => {
   // console.log('spiderfier rendered ->', props)
   const { mapInstance, locations } = props
 
@@ -79,6 +79,6 @@ const FunctSpiderfy = memo((props) => {
       />
     ))
   )
-})
+}
 
-export default FunctSpiderfy
+export default memo(FunctSpiderfy)

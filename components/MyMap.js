@@ -8,7 +8,7 @@ import FunctSpiderfy from './Spiderfy-funct'
 const libraries = ['places']
 
 
-const MyMap = memo((props) => {
+const MyMap = (props) => {
 
   // console.log('map compo')
 
@@ -42,6 +42,6 @@ const MyMap = memo((props) => {
       }
     </GoogleMap>
   )
-})
+}
 
-export default MyMap
+export default memo(MyMap)

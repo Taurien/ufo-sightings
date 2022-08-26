@@ -5,7 +5,7 @@ import { Autocomplete, TextField, FormControl, FormGroup, FormControlLabel, Chec
 import MapContext from "../context/MapContext"
 
 
-const SearchBar = memo(({selectedCountry, }) => {
+const SearchBar = ({selectedCountry, }) => {
   // console.log('searchbar')
 
   const { countries, years, shapes, states, provinces } = useSelector((state) => state.map)
@@ -203,6 +203,6 @@ const SearchBar = memo(({selectedCountry, }) => {
       </div>
     </div>
   )
-})
+}
 
-export default SearchBar
+export default memo(SearchBar)
