@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux'
 import { Autocomplete, TextField, FormControl, FormGroup, FormControlLabel, Checkbox, Button } from '@mui/material'
 
 import MapContext from "../context/MapContext"
+import InputSlider from "./InputSlider"
 
 
 const SearchBar = ({selectedCountry, }) => {
@@ -16,25 +17,29 @@ const SearchBar = ({selectedCountry, }) => {
 
   const nations = arrayOptions(countries, 'name')
   
-  // const [ selectedNation, setSelectedNation ] = useState(selectedCountry)
   const [ selectedNation, setSelectedNation ] = useState(null)
   const [ selectedState, setSelectedState ] = useState(null)
   const [ selectedYear, setSelectedYear ] = useState(null)
   const [ selectedShape, setSelectedShape ] = useState(null)
+  const [ limitValue, setLimitValue] = useState(30)
   
   const [ nationAutoComp, setNationAutoComp ]= useState(false)
   const [ yearsAutoComp, setYearsAutoComp ]= useState(false)
   const [ shapeAutoComp, setShapeAutoComp ]= useState(false)
+  const [ limitSlider, setLimitSlider ]= useState(false)
 
+  const handleSliderChange = (event, newValue) => setLimitValue(newValue)
+  const handleInputChange = (event) => setLimitValue(event.target.value === '' ? '' : event.target.value)
 
   const clearForm = () => {
-    setSelectedNation(selectedCountry ? selectedCountry : null)
+    setSelectedNation(null)
     setSelectedState(null)
     setSelectedYear(null)
     setSelectedShape(null)
     setNationAutoComp(false)
     setYearsAutoComp(false)
     setShapeAutoComp(false)
+    setLimitSlider(false)
   }
 
   const submitHanlder = (e) => {
@@ -45,17 +50,17 @@ const SearchBar = ({selectedCountry, }) => {
 
     switch (territory) {
       case 'nl':
-        state = 'nf';
-        break;
+        state = 'nf'
+        break
       case 'qc':
-        state = 'pq';
-        break;
+        state = 'pq'
+        break
       case 'sk':
-         state = 'sa';
-        break;
+         state = 'sa'
+        break
       case 'yt':
-        state = 'yk';
-        break;
+        state = 'yk'
+        break
       default:
         state = territory
     }
@@ -65,10 +70,11 @@ const SearchBar = ({selectedCountry, }) => {
     if (state) query.state = state
     if (selectedYear) query.year = selectedYear
     if (selectedShape) query.shape = selectedShape
-    // if (limit) query.limit = limit
+    if (limitSlider) query.limit = limitValue
 
     if (Object.keys(query).length === 0) console.warn('empty query') 
     else {
+      console.log(query)
       setOpenBar(false)
       setSelectedInSearch(query)
       clearForm()
@@ -100,7 +106,7 @@ const SearchBar = ({selectedCountry, }) => {
             </div>
             
             <div className=" grid grid-flow-row gap-0.5">
-              <Button sx={{'textTransform': 'capitalize'}} color='success' className="w-full" variant="contained" onClick={() => resetMap()}>
+              <Button sx={{'textTransform': 'capitalize'}} color='success' className="w-full" variant="contained" onClick={() => {clearForm(); resetMap()}}>
                 Reset Map
               </Button>
               {
@@ -113,79 +119,72 @@ const SearchBar = ({selectedCountry, }) => {
 
             <div className=" grid grid-flow-row">
               <span className="w-full font-bold text-xl mb-2">
-                {customSearch? 'Search by' : 'Filter by'}...
+                {customSearch? 'Search ' : 'Filter '}by...
               </span>
               <form onSubmit={submitHanlder} className='mt-3' >
-                {/* BY COUNTRY */}
+
+                {/* ---------------------------------------------------------------- BY COUNTRY */}
                   {
                     customSearch &&
                     <>
+                      <FormControlLabel label={'Country'} value={'country'}
+                        onChange={() => setNationAutoComp(!nationAutoComp)} control={<Checkbox checked={nationAutoComp} />}
+                      />
                       {
                         nationAutoComp &&
-                        <Autocomplete
-                          options={nations}
-                          autoComplete
-                          renderInput={(params) => <TextField {...params} label={'Country'} />}
-                          onChange={(e, value) => setSelectedNation(territorySplit(value))}
+                        <Autocomplete autoComplete options={nations}
+                          onChange={(e, value) => setSelectedNation(territorySplit(value))} renderInput={(params) => <TextField {...params} label={'Country'} />}
                         />
                       }
-                      <FormControlLabel
-                        onChange={() => setNationAutoComp(!nationAutoComp)}
-                        label={'Country'}
-                        value={'country'} 
-                        control={<Checkbox checked={nationAutoComp} />}
-                      />
                     </>
                   }
-                  
-                {/* END COUNTRY */}
-                {/* BY STATE OR PROVINCE */}
-                  { (selectedCountry === 'ca' || selectedCountry === 'us') &&
+                {/* ---------------------------------------------------------------- END COUNTRY */}
+
+                {/* ---------------------------------------------------------------- BY STATE OR PROVINCE */}
+                  { 
+                    ((selectedNation || selectedCountry) === 'ca' || (selectedNation || selectedCountry) === 'us') &&
                     <Autocomplete
-                      options={arrayOptions(selectedCountry === 'ca' ? provinces : states)}
-                      autoComplete
-                      renderInput={(params) => <TextField {...params} label={selectedCountry === 'ca' ? 'Provinces' : 'States' } />}
-                      onChange={(e, value) => setSelectedState(value)}
+                      autoComplete options={arrayOptions((selectedNation || selectedCountry) === 'ca' ? provinces : states)}
+                      renderInput={(params) => <TextField {...params} label={(selectedNation || selectedCountry) === 'ca' ? 'Provinces' : 'States' } />}
+                      onChange={(e, value) => setSelectedState(value)} 
                     />
                   }
-                {/* END STATE OR PROVINCE */}
-                {/* BY YEAR OF APPEARANCE */}
+                {/* ---------------------------------------------------------------- END STATE OR PROVINCE */}
+
+                {/* ---------------------------------------------------------------- BY YEAR OF APPEARANCE */}
+                  <FormControlLabel label={'Year'} value={'year'}
+                    onChange={() => setYearsAutoComp(!yearsAutoComp)} control={<Checkbox checked={yearsAutoComp} />}
+                  />
                   {
                     yearsAutoComp &&
-                    <Autocomplete
-                      options={years}
-                      autoComplete
-                      renderInput={(params) => <TextField {...params} label={'Year'} />}
-                      onChange={(e, value) => setSelectedYear(value)}
+                    <Autocomplete autoComplete options={years}
+                      onChange={(e, value) => setSelectedYear(value)} renderInput={(params) => <TextField {...params} label={'Year'} />}
                     />
                   }
-                  <FormControlLabel
-                    onChange={() => setYearsAutoComp(!yearsAutoComp)}
-                    label={'Year'}
-                    value={'year'} 
-                    control={<Checkbox checked={yearsAutoComp} />}
+                {/* ---------------------------------------------------------------- END YEAR OF APPEARANCE */}
+
+                {/* ---------------------------------------------------------------- BY UFO SHAPE */}
+                  <FormControlLabel label={'Shape'} value={'shape'}
+                    onChange={() => setShapeAutoComp(!shapeAutoComp)} control={<Checkbox checked={shapeAutoComp} />}
                   />
-                {/* END YEAR OF APPEARANCE */}
-                {/* BY UFO SHAPE */}
                   {
                     shapeAutoComp &&
-                    <Autocomplete
-                      options={shapes}
-                      autoComplete
-                      renderInput={(params) => <TextField {...params} label={'Shape'} />}
-                      onChange={(e, value) => setSelectedShape(value)}
+                    <Autocomplete autoComplete options={shapes}
+                      onChange={(e, value) => setSelectedShape(value)} renderInput={(params) => <TextField {...params} label={'Shape'} />}
                     />
                   }
-                  <FormControlLabel
-                    onChange={() => setShapeAutoComp(!shapeAutoComp)}
-                    label={'Shape'}
-                    value={'shape'} 
-                    control={<Checkbox checked={shapeAutoComp} />}
-                  />
-                {/* END UFO SHAPE */}
-                {/* SET LIMIT */}
+                {/* ---------------------------------------------------------------- END UFO SHAPE */}
 
-                {/* END SET LIMIT */}
+                {/* ---------------------------------------------------------------- SET LIMIT */}
+                  <FormControlLabel label={'Limit'} value={'limit'}
+                    onChange={() => setLimitSlider(!limitSlider)} control={<Checkbox checked={limitSlider} />}
+                  />
+                  { 
+                    limitSlider &&
+                    <InputSlider limitValue={limitValue} handleSliderChange={handleSliderChange} handleInputChange={handleInputChange } />
+                  }
+                {/* ---------------------------------------------------------------- END SET LIMIT */}
+
                 <div className="grid grid-flow-col">
                   <Button onClick={clearForm} color='success' className="w-full" variant="outlined">
                     Clear
@@ -194,6 +193,7 @@ const SearchBar = ({selectedCountry, }) => {
                     Seacrh
                   </Button>
                 </div>
+
               </form>
             </div>
 
