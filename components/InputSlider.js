@@ -1,7 +1,9 @@
-import { Box, Grid, Slider, MuiInput } from '@mui/material'
+import { Box, Grid, Slider } from "@mui/material"
+import MuiInput from '@mui/material/Input';
 
 
 const InputSlider = ({limitValue, handleSliderChange, handleInputChange}) => (
+  <>
   <Box >
     <Grid container spacing={2} alignItems="center">
       <Grid item xs>
@@ -30,9 +32,7 @@ const InputSlider = ({limitValue, handleSliderChange, handleInputChange}) => (
       </Grid>
     </Grid>
   </Box>
+  </>
 )
 
 export default InputSlider
-
-
-

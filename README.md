@@ -1,6 +1,7 @@
 https://www.kaggle.com/datasets/NUFORC/ufo-sightings
 
 '/api/ufo-locations?country=us&state=wi&year=2004&shape=light&limit=20'
+https://ufo-sightings-taurien.vercel.app/api/ufo-locations?country=us&state=wi&year=2004&shape=light&limit=30
 
 need to pass at least one value. ( country || state || year || shape )
 
