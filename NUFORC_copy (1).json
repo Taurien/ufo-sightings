@@ -1,0 +1,414 @@
+{
+  "name": "NUFORC copy",
+  "nodes": [
+    {
+      "parameters": {
+        "jsCode": "// List of fake but realistic User-Agent strings\nconst userAgents = [\n  // Windows\n  \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36\",\n  \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Firefox/125.0 Safari/537.36\",\n  // macOS\n  \"Mozilla/5.0 (Macintosh; Intel Mac OS X 13_3_1) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.4 Safari/605.1.15\",\n  // Linux\n  \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36\",\n  // Android\n  \"Mozilla/5.0 (Linux; Android 13; SM-G998U) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36\",\n  // iPhone\n  \"Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1\"\n];\n\n// for (const item of $input.all()) {\n//   // Pick one at random\n//   const randomUA = userAgents[Math.floor(Math.random() * userAgents.length)];\n//   // Return the random User-Agent as JSON\n//   item.json.userAgent = randomUA;\n// }\n\n// return $input.all();\n\nconst newItems = $input.all().map(item => {\n  const randomUA = userAgents[Math.floor(Math.random() * userAgents.length)];\n  return {\n    ...item,\n    json: {\n      ...item.json,\n      userAgent: randomUA\n    }\n  };\n});\n\nreturn newItems;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1180,
+        320
+      ],
+      "id": "7e503585-9ab6-4d5d-b813-b53bb8176dad",
+      "name": "randomizeUserAgent"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  // item.json.myNewField = 1;\n  const range = item.json.range.split(\"-\");\n  const start = parseInt(range[0], 10);\n  const end = parseInt(range[1], 10);\n  \n  const items = [];\n  \n  for (let i = start; i <= end; i++) {\n    items.push({ json: { ufoId: i } });\n  }\n\n  item.json.rangeArray = items\n}\n\n// return $input.all();\nreturn $input.first().json.rangeArray"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        740,
+        320
+      ],
+      "id": "2072a935-d391-4988-8cda-fd7349a600fa",
+      "name": "rangeArray"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "5ee73bb5-a9a0-4409-986f-eaf96abdd9eb",
+              "name": "range",
+              "value": "1-5",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        80,
+        395
+      ],
+      "id": "a60fbcf6-a3e4-4bc0-b136-cda1bcf9ce3e",
+      "name": "setRange"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        960,
+        320
+      ],
+      "id": "f1eea5c0-134b-4da8-be18-fda435510a90",
+      "name": "Loop Over Range"
+    },
+    {
+      "parameters": {
+        "url": "=https://nuforc.org/sighting/?id={{ $json.ufoId }}",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={\n  \"User-Agent\": \"{{ $json.userAgent }}\",\n  \"Accept-Language\": \"en-US,en;q=0.9\"\n} ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1400,
+        320
+      ],
+      "id": "04988c43-ee99-4783-947f-b432f1ee7f9d",
+      "name": "NUFORC Request",
+      "alwaysOutputData": true,
+      "notesInFlow": false,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "amount": 2
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1840,
+        370
+      ],
+      "id": "69ef254d-fb0b-4636-857a-f66badcf0942",
+      "name": "Wait",
+      "webhookId": "b65c2b3d-745a-4a3f-99f5-4227af6d94fd"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -140,
+        395
+      ],
+      "id": "9c6c0f36-fd33-40fe-99a6-767eb8436b85",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "jsCode": "const newItems = $input.all().map(item => {\n  return {\n    ...item,\n    json: {\n      ...item.json,\n      ufoId: $(\"randomizeUserAgent\").first().json.ufoId\n    }\n  };\n});\n\nreturn newItems;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1620,
+        320
+      ],
+      "id": "23a27524-d070-46d8-8704-5535f9f67f10",
+      "name": "Code2"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c2003784-18e3-4e00-ae42-03dda9ce1199",
+              "leftValue": "={{ $json.range }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        300,
+        395
+      ],
+      "id": "b847a57c-47af-40ff-8ea3-045e55474eef",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "dccda490-ed32-4bb1-8936-7d0ae68302ca",
+              "name": "range",
+              "value": "={{ $json.newRange }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        520,
+        420
+      ],
+      "id": "1f1488ab-8eb8-48d6-b40b-23dd8da1fb8e",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "jsCode": "function getUfoIdRange(data) {\n  const ids = data.map(entry => entry.json.ufoId);\n  const min = Math.min(...ids);\n  const max = Math.max(...ids);\n  return `${min}-${max}`;\n}\n\nfunction getNextRange(rangeStr) {\n  const [start, end] = rangeStr.split('-').map(Number);\n  const step = end - start + 1;\n  const newStart = end + 1;\n  const newEnd = end + step;\n  return `${newStart}-${newEnd}`;\n} \n\nconst rangeArrLastVal = getUfoIdRange($(\"rangeArray\").all())\n\nreturn {\n  json: {\n    newRange: getNextRange(rangeArrLastVal)\n  }\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1180,
+        120
+      ],
+      "id": "0fa77551-82e4-4082-8002-8d8c0e581982",
+      "name": "Code6"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1400,
+        120
+      ],
+      "id": "587bfdb2-e78f-4283-9022-f87b74dd2ca4",
+      "name": "Wait2",
+      "webhookId": "4ab914ca-67a5-4548-b88d-0ad55f40b0cb"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "07361c88-fcfb-4c29-a23d-cc47156f84ee",
+              "leftValue": "={{ $json.newRange }}",
+              "rightValue": "16-20",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1620,
+        120
+      ],
+      "id": "b44ccc0d-d059-43f3-9065-5d3ce19c3f9d",
+      "name": "If2"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "randomizeUserAgent": {
+      "main": [
+        [
+          {
+            "node": "NUFORC Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "rangeArray": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Range",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "setRange": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Range": {
+      "main": [
+        [
+          {
+            "node": "Code6",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "randomizeUserAgent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "NUFORC Request": {
+      "main": [
+        [
+          {
+            "node": "Code2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Range",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "setRange",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code2": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "rangeArray",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "rangeArray",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code6": {
+      "main": [
+        [
+          {
+            "node": "Wait2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait2": {
+      "main": [
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [],
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "b280b6c3-64ef-4fbe-82b1-f2f9ed3fa20e",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "21987616b40f358a59d47f879fcb55b2f2ee12cc43b6bfa2fac329c0e64baa44"
+  },
+  "id": "MEISVTz54rWnGnej",
+  "tags": []
+}

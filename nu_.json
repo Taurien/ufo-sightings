@@ -1,0 +1,817 @@
+{
+  "name": "nu!",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1320,
+        120
+      ],
+      "id": "79c1d43c-9155-498a-8384-4db0ef589651",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c2003784-18e3-4e00-ae42-03dda9ce1199",
+              "leftValue": "={{ $json.range }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -880,
+        120
+      ],
+      "id": "8848804a-f85f-48bf-ae78-f3c499f9988c",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "07361c88-fcfb-4c29-a23d-cc47156f84ee",
+              "leftValue": "={{ $json.newRange }}",
+              "rightValue": "105-115",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1760,
+        195
+      ],
+      "id": "c61e004a-d5b0-4407-b8fc-1b024fd60b49",
+      "name": "If3"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "5ee73bb5-a9a0-4409-986f-eaf96abdd9eb",
+              "name": "range",
+              "value": "5966-5970",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1100,
+        120
+      ],
+      "id": "070dad7d-2887-4ed9-bd91-39d849b1e178",
+      "name": "setRange"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "dccda490-ed32-4bb1-8936-7d0ae68302ca",
+              "name": "range",
+              "value": "={{ $json.newRange }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -660,
+        120
+      ],
+      "id": "8bff4674-22be-466c-8147-1ef50432f535",
+      "name": "newRange->range"
+    },
+    {
+      "parameters": {
+        "jsCode": "// List of fake but realistic User-Agent strings\nconst userAgents = [\n  // Windows\n  \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36\",\n  \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Firefox/125.0 Safari/537.36\",\n  // macOS\n  \"Mozilla/5.0 (Macintosh; Intel Mac OS X 13_3_1) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.4 Safari/605.1.15\",\n  // Linux\n  \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36\",\n  // Android\n  \"Mozilla/5.0 (Linux; Android 13; SM-G998U) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36\",\n  // iPhone\n  \"Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1\"\n];\n\n// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  // item.json.myNewField = 1;\n  const range = item.json.range.split(\"-\");\n  const start = parseInt(range[0], 10);\n  const end = parseInt(range[1], 10);\n  \n  const items = [];\n  \n  for (let i = start; i <= end; i++) {\n    const randomUA = userAgents[Math.floor(Math.random() * userAgents.length)];\n    items.push({\n      json: {\n        ufoId: i,\n        userAgent: randomUA\n      }\n    });\n  }\n\n  item.json.rangeArray = items\n}\n\n// return $input.all();\nreturn $input.first().json.rangeArray"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -440,
+        20
+      ],
+      "id": "1fae2f32-53d5-4d25-80a1-9be9a0633037",
+      "name": "rangeArray"
+    },
+    {
+      "parameters": {
+        "operation": "extractHtmlContent",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "data",
+              "cssSelector": ".content-area",
+              "returnValue": "html"
+            }
+          ]
+        },
+        "options": {
+          "trimValues": false,
+          "cleanUpText": true
+        }
+      },
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [
+        660,
+        20
+      ],
+      "id": "07aa5486-4baa-4e59-97c5-abbdfd5ad6e4",
+      "name": "extractMainContent"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const html = $input.item.json.data\n\nconst titleMatch = html.match(/<h1>(.*?)<\\/h1>/);\nconst occurredMatch = html.match(/<b>Occurred:<\\/b>\\s*(.*?)<br>/);\nconst reportedMatch = html.match(/<b>Reported:<\\/b>\\s*(.*?)<br>/);\nconst durationMatch = html.match(/<b>Duration:<\\/b>\\s*(.*?)<br>/);\nconst locationMatch = html.match(/<b>Location:<\\/b>\\s*(.*?)<br>/);\nconst shapeMatch = html.match(/<b>Shape:<\\/b>\\s*(.*?)<br>/);\nconst postedMatch = html.match(/<i>Posted\\s*(.*?)<\\/i>/);\nconst descriptionMatch = html.match(/<b>Shape:<\\/b>.*?<br><br><br>(.*?)<br><br><i>Posted/s);\n\nconst result = {\n  json: {\n    id: $(\"If .data exists\").item.json.ufoId,\n    title: titleMatch ? titleMatch[1] : null,\n    occurred: occurredMatch ? occurredMatch[1] : null,\n    reported: reportedMatch ? reportedMatch[1] : null,\n    duration: durationMatch ? durationMatch[1] : null,\n    location: locationMatch ? (/[a-zA-Z]/.test(locationMatch[1])?locationMatch[1]: \"\") : \"\",\n    shape: shapeMatch ? shapeMatch[1] : null,\n    description: descriptionMatch \n      ? descriptionMatch[1]\n          .replace(/<[^>]+>/g, '')     // Remove HTML\n          .replace(/&amp;/g, '&')      // Fix &\n          .trim() \n      : null,\n    posted: postedMatch ? postedMatch[1] : null,\n    fetched: new Date().toISOString()\n  }\n};\n\nreturn result"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        880,
+        20
+      ],
+      "id": "ccf19052-23bb-41cf-abc0-d11b7b7e6d7a",
+      "name": "buildUfoObj"
+    },
+    {
+      "parameters": {
+        "jsCode": "function getUfoIdRange(data) {\n  const ids = data.map(entry => entry.json.ufoId);\n  const min = Math.min(...ids);\n  const max = Math.max(...ids);\n  return `${min}-${max}`;\n}\n\nfunction getNextRange(rangeStr) {\n  const [start, end] = rangeStr.split('-').map(Number);\n  const step = end - start + 1;\n  const newStart = end + 1;\n  const newEnd = end + step;\n  return `${newStart}-${newEnd}`;\n} \n\nconst rangeArrLastVal = getUfoIdRange($(\"rangeArray\").all())\n\nreturn {\n  json: {\n    newRange: getNextRange(rangeArrLastVal)\n  }\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1320,
+        20
+      ],
+      "id": "089e114a-0ccb-4ea2-97f5-193d91c5afdd",
+      "name": "setNewRange"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1540,
+        20
+      ],
+      "id": "71a1f86e-dbc7-4e44-bfe6-0d315328bab6",
+      "name": "Wait",
+      "webhookId": "4ab914ca-67a5-4548-b88d-0ad55f40b0cb"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "cc5df261-0941-4d9c-bcf0-c1b6680f1305",
+              "leftValue": "={{ $json.data }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        440,
+        -80
+      ],
+      "id": "7fc27298-97cf-4962-99a7-e68b96b81c01",
+      "name": "If .data exists"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "5445cd77-620c-4a06-a2cb-2e11e4f76739",
+              "name": "ufoId",
+              "value": "={{ $json.ufoId }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        660,
+        -180
+      ],
+      "id": "b7567c70-92af-4421-a9a8-af9b422555b6",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "jsCode": "return {\n  json: {\n    pendUfos: $input.all().map((item) => item.json.ufoId).join(\", \")\n  }\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        880,
+        -180
+      ],
+      "id": "30df724a-46bf-4bbc-8906-bd78aaca532f",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "url": "=https://nuforc.org/sighting/?id={{ $json.ufoId }}",
+        "options": {
+          "batching": {
+            "batch": {
+              "batchSize": 1,
+              "batchInterval": 2000
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -220,
+        120
+      ],
+      "id": "57a45387-2bb1-49a2-9d22-b35d38ff1101",
+      "name": "NUFORC Request1",
+      "alwaysOutputData": true,
+      "notesInFlow": false,
+      "disabled": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "url": "=https://nuforc.org/sighting/?id={{ $json.ufoId }}",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={\n  \"User-Agent\": \"{{ $json.userAgent }}\",\n  \"Accept-Language\": \"en-US,en;q=0.9\"\n} ",
+        "options": {
+          "batching": {
+            "batch": {
+              "batchSize": 1,
+              "batchInterval": 2000
+            }
+          },
+          "proxy": "http://bb66f85e86c91c72775de20c836c63e09d977732:@api.zenrows.com:8001"
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        220,
+        120
+      ],
+      "id": "56d620fa-53eb-417e-bb3e-028d0ee56185",
+      "name": "NUFORC proxy request",
+      "alwaysOutputData": true,
+      "notesInFlow": false,
+      "disabled": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const newItems = $input.all().map((item,idx) => {\n  return {\n    ...item,\n    json: {\n      ufoId: $(\"rangeArray\").all()[idx].json.ufoId,\n      ...item.json,\n    }\n  };\n});\n\nreturn newItems;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        220,
+        -80
+      ],
+      "id": "626262c7-f33b-4787-a5aa-c495d31f08d3",
+      "name": "redoUfoId1"
+    },
+    {
+      "parameters": {
+        "url": "=https://nuforc.org/sighting/?id={{ $json.ufoId }}",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={\n  \"User-Agent\": \"{{ $json.userAgent }}\",\n  \"Accept-Language\": \"en-US,en;q=0.9\"\n} ",
+        "options": {
+          "batching": {
+            "batch": {
+              "batchSize": 1,
+              "batchInterval": 2000
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        0,
+        120
+      ],
+      "id": "32ba0cdb-8302-4bea-8c27-bdc3df3c0664",
+      "name": "NUFORC proxy request1",
+      "alwaysOutputData": true,
+      "notesInFlow": false,
+      "disabled": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://realtime.oxylabs.io/v1/queries",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "{\n  \"Content-Type\": \"application/json\"\n}",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "source",
+              "value": "universal"
+            },
+            {
+              "name": "url",
+              "value": "=https://nuforc.org/sighting/?id={{ $json.ufoId }}"
+            }
+          ]
+        },
+        "options": {
+          "batching": {
+            "batch": {
+              "batchSize": 1,
+              "batchInterval": 2000
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -220,
+        -80
+      ],
+      "id": "ccd775f1-2e7c-4512-837c-dbc9db86c80f",
+      "name": "NUFORC proxy request2",
+      "alwaysOutputData": true,
+      "notesInFlow": false,
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "apQVFu0PwMMbB70L",
+          "name": "Oxylabs"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "337e282a-55f4-4ec0-9711-1aff6d3476f2",
+              "name": "data",
+              "value": "={{ $json.results[0].content }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        0,
+        -80
+      ],
+      "id": "eeda3170-20d7-4de1-b826-9daa16837387",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1YBqk2_IZty152qNb6H-0pUQUsD9aIWUteLZfW5mhQ1Y/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Hoja 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1YBqk2_IZty152qNb6H-0pUQUsD9aIWUteLZfW5mhQ1Y/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "occurred",
+              "displayName": "occurred",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "reported",
+              "displayName": "reported",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "duration",
+              "displayName": "duration",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "shape",
+              "displayName": "shape",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "description",
+              "displayName": "description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "posted",
+              "displayName": "posted",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "fetched",
+              "displayName": "fetched",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1100,
+        20
+      ],
+      "id": "b399d93f-9b35-4bb3-9341-be4d9d08e07b",
+      "name": "Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "SgestaALB34vDjDJ",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "setRange",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "rangeArray",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "newRange->range",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If3": {
+      "main": [
+        [],
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "setRange": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "newRange->range": {
+      "main": [
+        [
+          {
+            "node": "rangeArray",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "rangeArray": {
+      "main": [
+        [
+          {
+            "node": "NUFORC proxy request2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "extractMainContent": {
+      "main": [
+        [
+          {
+            "node": "buildUfoObj",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "buildUfoObj": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "setNewRange": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "If3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If .data exists": {
+      "main": [
+        [
+          {
+            "node": "extractMainContent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        []
+      ]
+    },
+    "NUFORC proxy request": {
+      "main": [
+        []
+      ]
+    },
+    "NUFORC Request1": {
+      "main": [
+        [
+          {
+            "node": "NUFORC proxy request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "redoUfoId1": {
+      "main": [
+        [
+          {
+            "node": "If .data exists",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "NUFORC proxy request1": {
+      "main": [
+        [
+          {
+            "node": "NUFORC proxy request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "NUFORC proxy request2": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "redoUfoId1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "setNewRange",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "c771dacf-7905-43a0-9296-920ada3e9c95",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "59928e532124e7f25db7e61e2f25c5c44246fd9e91bc15d6b51558ea65c7933b"
+  },
+  "id": "5yvLb42hL9MnlPyq",
+  "tags": []
+}

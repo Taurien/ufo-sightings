@@ -1,0 +1,860 @@
+{
+  "name": "NUFORC",
+  "nodes": [
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const html = $input.item.json.data\n\nconst titleMatch = html.match(/<h1>(.*?)<\\/h1>/);\nconst occurredMatch = html.match(/<b>Occurred:<\\/b>\\s*(.*?)<br>/);\nconst reportedMatch = html.match(/<b>Reported:<\\/b>\\s*(.*?)<br>/);\nconst durationMatch = html.match(/<b>Duration:<\\/b>\\s*(.*?)<br>/);\nconst locationMatch = html.match(/<b>Location:<\\/b>\\s*(.*?)<br>/);\nconst shapeMatch = html.match(/<b>Shape:<\\/b>\\s*(.*?)<br>/);\nconst postedMatch = html.match(/<i>Posted\\s*(.*?)<\\/i>/);\nconst descriptionMatch = html.match(/<b>Shape:<\\/b>.*?<br><br><br>(.*?)<br><br><i>Posted/s);\n\nconst result = {\n  json: {\n    id: $input.item.json.ufoId,\n    title: titleMatch ? titleMatch[1] : null,\n    occurred: occurredMatch ? occurredMatch[1] : null,\n    reported: reportedMatch ? reportedMatch[1] : null,\n    duration: durationMatch ? durationMatch[1] : null,\n    location: locationMatch ? (/[a-zA-Z]/.test(locationMatch[1])?locationMatch[1]: \"\") : \"\",\n    shape: shapeMatch ? shapeMatch[1] : null,\n    description: descriptionMatch \n      ? descriptionMatch[1]\n          .replace(/<[^>]+>/g, '')     // Remove HTML\n          .replace(/&amp;/g, '&')      // Fix &\n          .trim() \n      : null,\n    posted: postedMatch ? postedMatch[1] : null,\n    fetched: new Date().toISOString()\n  }\n};\n\nreturn result"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1620,
+        -100
+      ],
+      "id": "4db112be-e6c0-4394-8a28-6c8612e663be",
+      "name": "Code3"
+    },
+    {
+      "parameters": {
+        "jsCode": "// List of fake but realistic User-Agent strings\nconst userAgents = [\n  // Windows\n  \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36\",\n  \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Firefox/125.0 Safari/537.36\",\n  // macOS\n  \"Mozilla/5.0 (Macintosh; Intel Mac OS X 13_3_1) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.4 Safari/605.1.15\",\n  // Linux\n  \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36\",\n  // Android\n  \"Mozilla/5.0 (Linux; Android 13; SM-G998U) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36\",\n  // iPhone\n  \"Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1\"\n];\n\n// for (const item of $input.all()) {\n//   // Pick one at random\n//   const randomUA = userAgents[Math.floor(Math.random() * userAgents.length)];\n//   // Return the random User-Agent as JSON\n//   item.json.userAgent = randomUA;\n// }\n\n// return $input.all();\n\nconst newItems = $input.all().map(item => {\n  const randomUA = userAgents[Math.floor(Math.random() * userAgents.length)];\n  return {\n    ...item,\n    json: {\n      ...item.json,\n      userAgent: randomUA\n    }\n  };\n});\n\nreturn newItems;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1180,
+        600
+      ],
+      "id": "3e39fcc6-1af9-4b71-8ccd-a0e10bda2c92",
+      "name": "randomizeUserAgent"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  // item.json.myNewField = 1;\n  const range = item.json.range.split(\"-\");\n  const start = parseInt(range[0], 10);\n  const end = parseInt(range[1], 10);\n  \n  const items = [];\n  \n  for (let i = start; i <= end; i++) {\n    items.push({ json: { ufoId: i } });\n  }\n\n  item.json.rangeArray = items\n}\n\n// return $input.all();\nreturn $input.first().json.rangeArray"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        740,
+        600
+      ],
+      "id": "9c01f4a0-9837-470c-961b-e90328b2325c",
+      "name": "rangeArray"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "5445cd77-620c-4a06-a2cb-2e11e4f76739",
+              "name": "ufoId",
+              "value": "={{ $json.ufoId }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1400,
+        400
+      ],
+      "id": "f5b05098-4e13-4395-81fd-a52b5f6c58aa",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "projectId": "mc-nuforc",
+        "collection": "ufos",
+        "documentId": "=#{{$json.id}}_{{ $json.posted}}",
+        "columns": "={{ $json.keys().join(\", \") }}"
+      },
+      "type": "n8n-nodes-base.googleFirebaseCloudFirestore",
+      "typeVersion": 1.1,
+      "position": [
+        1840,
+        -100
+      ],
+      "id": "30f347fc-cb88-472d-8552-50c6e998a512",
+      "name": "Google Cloud Firestore",
+      "credentials": {
+        "googleFirebaseCloudFirestoreOAuth2Api": {
+          "id": "Div5DuNSIsfcSux2",
+          "name": "Google Firebase Cloud Firestore account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "extractHtmlContent",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "data",
+              "cssSelector": ".content-area",
+              "returnValue": "html"
+            }
+          ]
+        },
+        "options": {
+          "trimValues": false,
+          "cleanUpText": true
+        }
+      },
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [
+        1840,
+        100
+      ],
+      "id": "3fedc10f-08e9-4a1a-b6dc-874dbf41916a",
+      "name": "extractContent"
+    },
+    {
+      "parameters": {
+        "jsCode": "return {\n  json: {\n    pendUfos: $input.all().map((item) => item.json.ufoId).join(\", \")\n  }\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1620,
+        400
+      ],
+      "id": "dfb8ba6f-2a0b-42ab-a5a9-141f88056f6e",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "projectId": "mc-nuforc",
+        "collection": "pend_ufos",
+        "documentId": "={{ $now.toISO() }}",
+        "columns": "=pendUfos"
+      },
+      "type": "n8n-nodes-base.googleFirebaseCloudFirestore",
+      "typeVersion": 1.1,
+      "position": [
+        1840,
+        400
+      ],
+      "id": "01a8b0e4-bb7e-46c9-b44f-95a6eb86817b",
+      "name": "Google Cloud Firestore1",
+      "credentials": {
+        "googleFirebaseCloudFirestoreOAuth2Api": {
+          "id": "Div5DuNSIsfcSux2",
+          "name": "Google Firebase Cloud Firestore account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "jsCode": "function getNextRange(rangeStr) {\n  const [start, end] = rangeStr.split('-').map(Number);\n  const step = end - start + 1;\n  const newStart = end + 1;\n  const newEnd = end + step;\n  return `${newStart}-${newEnd}`;\n}\n\nreturn {\n  json: {\n    newRange: getNextRange($(\"setRange\").first().json.range)\n  }\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2060,
+        -100
+      ],
+      "id": "f869c89d-1902-41af-a991-5fd20b987b9d",
+      "name": "Code1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "5ee73bb5-a9a0-4409-986f-eaf96abdd9eb",
+              "name": "range",
+              "value": "1-5",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        80,
+        500
+      ],
+      "id": "d10b4e1f-065b-477b-9aed-5c9b17966b84",
+      "name": "setRange"
+    },
+    {
+      "parameters": {
+        "options": {
+          "reset": false
+        }
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        960,
+        600
+      ],
+      "id": "e4c0d9fd-ffcc-4622-9710-f634faa5bcf5",
+      "name": "Loop Over Range"
+    },
+    {
+      "parameters": {
+        "url": "=https://nuforc.org/sighting/?id={{ $json.ufoId }}",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={\n  \"User-Agent\": \"{{ $json.userAgent }}\",\n  \"Accept-Language\": \"en-US,en;q=0.9\"\n} ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1400,
+        600
+      ],
+      "id": "e731ee6f-af81-4e76-9e67-fa38ec8aa98f",
+      "name": "NUFORC Request",
+      "alwaysOutputData": true,
+      "notesInFlow": false,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "amount": 2
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1840,
+        675
+      ],
+      "id": "a5e17af5-5024-43ae-a999-0715d316fe44",
+      "name": "Wait",
+      "webhookId": "98349ffe-8438-4e30-b689-c7affbd436f1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "cc5df261-0941-4d9c-bcf0-c1b6680f1305",
+              "leftValue": "={{ $json.data }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1180,
+        250
+      ],
+      "id": "c488b617-12df-491d-8c34-ee7ebb4d48d6",
+      "name": "If .data exists"
+    },
+    {
+      "parameters": {
+        "options": {
+          "reset": false
+        }
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1400,
+        100
+      ],
+      "id": "5624189d-6995-46a3-be26-db02746c2741",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        2280,
+        -100
+      ],
+      "id": "70673586-2904-4308-8cce-77df02796438",
+      "name": "Wait1",
+      "webhookId": "f1332dee-c3be-4b8e-9141-233a05fa8408"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "07361c88-fcfb-4c29-a23d-cc47156f84ee",
+              "leftValue": "={{ $json.newRange }}",
+              "rightValue": "16-20",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2500,
+        400
+      ],
+      "id": "4292c65e-93a8-45e8-a6b1-4b65898baae6",
+      "name": "If"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -140,
+        675
+      ],
+      "id": "42e49e3a-73ba-4fd5-9606-148d454c9dff",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "content": "it keeps items. how to delete the last?"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        860,
+        420
+      ],
+      "typeVersion": 1,
+      "id": "b9154fa3-d503-498c-bd41-2f94d1caaf77",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "5 = 5\nprev + 5 = 10\nprev + 5 = 15"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        560,
+        400
+      ],
+      "typeVersion": 1,
+      "id": "c706ee27-4b13-4769-be33-5befc3b0dead",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "chat says im not cloning. thats why n8n persist"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1380,
+        800
+      ],
+      "typeVersion": 1,
+      "id": "5aa82c78-7dca-4d4b-87e4-6e7b5d8cd91c",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "jsCode": "const newItems = $input.all().map(item => {\n  return {\n    ...item,\n    json: {\n      ...item.json,\n      // x:\"x\"\n    }\n  };\n});\n\nreturn newItems;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1620,
+        100
+      ],
+      "id": "a9ebb4ff-7c26-4f98-ad7d-e00175bcc619",
+      "name": "Code4"
+    },
+    {
+      "parameters": {
+        "jsCode": "const newItems = $input.all().map(item => {\n  return {\n    ...item,\n    json: {\n      ...item.json,\n      // ufoId: $(\"Code4\").first().json.ufoId\n      ufoId: $(\"Code4\").first().json.ufoId\n    }\n  };\n});\n\nreturn newItems;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2060,
+        150
+      ],
+      "id": "70a44502-8443-4054-9d0b-50eb8e8372ab",
+      "name": "Code5"
+    },
+    {
+      "parameters": {
+        "jsCode": "const newItems = $input.all().map(item => {\n  return {\n    ...item,\n    json: {\n      ...item.json,\n      ufoId: $(\"randomizeUserAgent\").first().json.ufoId\n    }\n  };\n});\n\nreturn newItems;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1620,
+        600
+      ],
+      "id": "f6eaed43-12e8-4203-863e-a18a77a62d2f",
+      "name": "Code2"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c2003784-18e3-4e00-ae42-03dda9ce1199",
+              "leftValue": "={{ $json.range }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        280,
+        660
+      ],
+      "id": "8e2c62dc-1854-43c8-bcb0-6ef24c8d5702",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "dccda490-ed32-4bb1-8936-7d0ae68302ca",
+              "name": "range",
+              "value": "={{ $json.newRange }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        520,
+        725
+      ],
+      "id": "68c30911-b16c-4f12-9d4d-949408d7cfe3",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "jsCode": "function getNextRange(rangeStr) {\n  const [start, end] = rangeStr.split('-').map(Number);\n  const step = end - start + 1;\n  const newStart = end + 1;\n  const newEnd = end + step;\n  return `${newStart}-${newEnd}`;\n}\n\nreturn {\n  json: {\n    newRange: getNextRange($(\"setRange\").first().json.range)\n  }\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2200,
+        580
+      ],
+      "id": "bbbf3797-901a-448a-856b-a0d8e3681df1",
+      "name": "Code6"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        2260,
+        800
+      ],
+      "id": "e5534ada-797b-49fe-b0d7-658115353fb9",
+      "name": "Wait2",
+      "webhookId": "f1332dee-c3be-4b8e-9141-233a05fa8408"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "07361c88-fcfb-4c29-a23d-cc47156f84ee",
+              "leftValue": "={{ $json.newRange }}",
+              "rightValue": "16-20",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2420,
+        920
+      ],
+      "id": "fe7212ca-0eb1-4408-94df-b1e8f376d420",
+      "name": "If2"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Code3": {
+      "main": [
+        [
+          {
+            "node": "Google Cloud Firestore",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "randomizeUserAgent": {
+      "main": [
+        [
+          {
+            "node": "NUFORC Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "rangeArray": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Range",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "extractContent": {
+      "main": [
+        [
+          {
+            "node": "Code5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Google Cloud Firestore1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Cloud Firestore": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "setRange": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Range": {
+      "main": [
+        [
+          {
+            "node": "Code6",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "randomizeUserAgent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "NUFORC Request": {
+      "main": [
+        [
+          {
+            "node": "Code2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Range",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If .data exists": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Code3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Code4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait1": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [],
+        []
+      ]
+    },
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "setRange",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Cloud Firestore1": {
+      "main": [
+        []
+      ]
+    },
+    "Code4": {
+      "main": [
+        [
+          {
+            "node": "extractContent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code5": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code2": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "rangeArray",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "rangeArray",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code6": {
+      "main": [
+        [
+          {
+            "node": "Wait2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait2": {
+      "main": [
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [],
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "220a35dd-145a-4635-b9d0-e361310e7071",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "21987616b40f358a59d47f879fcb55b2f2ee12cc43b6bfa2fac329c0e64baa44"
+  },
+  "id": "1t2r6kkVI33NJZsM",
+  "tags": []
+}
