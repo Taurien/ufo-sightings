@@ -1,6 +1,6 @@
 # UFO Sightings 🛸
 
-According to the dataset of UFO reports that [NUFORC](https://nuforc.org/) has on [Kaggle](https://www.kaggle.com/datasets/NUFORC/ufo-sightings) (last updated on 2019). I wanted to build a place where these sightings can be searched, filtered and highlighted on the Google map.
+According to a dataset of UFO reports originally compiled by the [National UFO Reporting Center (NUFORC)](https://nuforc.org/) and later made publicly available on [Kaggle](https://www.kaggle.com/datasets/NUFORC/ufo-sightings) (last updated in 2019), I wanted to build an interactive platform where these sightings can be **searched, filtered, and visualized** on Google Maps.
 
 This dataset contains sightings that can be filtered by country:
 
@@ -12,7 +12,8 @@ This dataset contains sightings that can be filtered by country:
 | Australia (**au**)     | 538       |
 | Deutschland (**de**)   | 105       |
 
-In order to build the project I downloaded the csv file and hosted it in MongoDB to allow me to make requests.
+To power this project, I downloaded the CSV file and hosted it in **MongoDB** to allow dynamic queries and efficient retrieval of data through an API.
+
 ## API Reference
 
 ### Get UFO's
@@ -20,22 +21,22 @@ In order to build the project I downloaded the csv file and hosted it in MongoDB
   GET /api/ufo-locations?country=<value>&state=<value>&year=<value>&shape=<value>&limit=<value>
 ```
 
-* All parameters are optional, but it is **required** to pass **at least one value** to make a request and get the ufo sightings. ( **country** || **state** || **year** || **shape** )
+* All parameters are optional, but it is **required** to pass **at least one filter** to make a request and retrieve sightings.
+Accepted filters: **country** || **state** || **year || **shape**
 
 ```http
   GET /api/ufo-locations?shape=<value>
 ```
 
-* Limit by default is 10.
-
-* Each request returns random ufo sightings
+* `limit` defaults to **10** if not provided.
+* Each request returns **random UFO sightings** based on the applied filters.
 
 ### Demo
 
 https://ufo-sightings-taurien.vercel.app/api/ufo-locations?country=us&state=wi&year=2004&shape=light&limit=30
 
+This request asks for **30 UFO sightings** in the **US (Wisconsin)** during **2004** with a **light** shape. However, only **14 sightings** were actually recorded, so that’s all the API returns.
 
-Request that returns 14 items because these were all the reported sightings in the **US** in **2004** with the shape of a **light**, even though I requested 30.
 
 ```
 {
@@ -73,13 +74,19 @@ Request that returns 14 items because these were all the reported sightings in t
 
 ## Tech Stack
 
-React - 
-NextJS -
-Redux -
-TailwindCSS -
-MUI -
-react-google-maps -
-overlapping-marker-spiderfier -
-Node -
-MongoDB
+- **Frontend:** React, Next.js, Redux, TailwindCSS, MUI  
+- **Maps & Visualization:** react-google-maps, overlapping-marker-spiderfier  
+- **Backend & Database:** Node.js, MongoDB  
+
+---
+
+## Disclaimer ⚠️
+
+- This project was built **for fun, learning, and experimentation**.  
+- The UFO sighting dataset does **not** belong to me.  
+- Reports were originally compiled by the [National UFO Reporting Center (NUFORC)](https://nuforc.org/).  
+- The dataset was later made **publicly accessible by a third party** on [Kaggle](https://www.kaggle.com/datasets/NUFORC/ufo-sightings).  
+
+---
+
 
