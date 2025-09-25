@@ -1,6 +1,6 @@
 # UFO Sightings 🛸
 
-According to a dataset of UFO reports originally compiled by the [National UFO Reporting Center (NUFORC)](https://nuforc.org/) and later made publicly available on [Kaggle](https://www.kaggle.com/datasets/NUFORC/ufo-sightings) (last updated in 2019), I wanted to build an interactive platform where these sightings can be **searched, filtered, and visualized** on Google Maps.
+Based on a dataset of UFO reports originally compiled by the [National UFO Reporting Center (NUFORC)](https://nuforc.org/) and later made publicly accessible by a third party on [Kaggle](https://www.kaggle.com/datasets/NUFORC/ufo-sightings) (last updated in 2019), I set out to build an interactive platform where these sightings can be **searched, filtered, and visualized** on Google Maps.
 
 This dataset contains sightings that can be filtered by country:
 
