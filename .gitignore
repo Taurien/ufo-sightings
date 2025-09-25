@@ -1,32 +1,53 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
 
-# dependencies
-/node_modules
-/.pnp
-.pnp.js
+# C extensions
+*.so
 
-# testing
-/coverage
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+eggs/
+*.egg-info/
+.installed.cfg
+*.egg
 
-# next.js
-/.next/
-/out/
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
 
-# production
-/build
+# Unit test / coverage
+.coverage
+.tox/
+.pytest_cache/
+htmlcov/
 
-# misc
-.DS_Store
-*.pem
+# Virtual environment
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
 
-# debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.pnpm-debug.log*
+# Project-specific temp files
+tmp/
+temp/
 
-# local env files
-.env*.local
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.bak
+*.swo
 
-# vercel
-.vercel
+
+*.log
+
+.astro/
+node_modules/
