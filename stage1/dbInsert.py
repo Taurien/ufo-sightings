@@ -20,11 +20,11 @@ try:
 
     # Try to connect to the database
     with engine.connect() as connection:
-        print("🎉 Connection to the MySQL database was successful!")
+        print("Connection to the MySQL database was successful!")
 
 except SQLAlchemyError as e:
     # This block will run if there's an error in the connection
-    print(f"❌ Error connecting to the database: {e}")
+    print(f"Error connecting to the database: {e}")
 
 # Path to your Excel file and table name
 excel_file_path = "nuforc_dataset.xlsx"

@@ -54,7 +54,7 @@ try:
     Session = sessionmaker(bind=engine)
 
     with Session() as session:
-        print("🎉 Connection to the MySQL database was successful!")
+        print("Connection to the MySQL database was successful!")
 
         metadata = MetaData()
         ufos_table = Table(
@@ -148,4 +148,4 @@ try:
             print("No records found with empty or null 'RAW' values.")
 
 except SQLAlchemyError as e:
-    print(f"❌ Error connecting to the database: {e}")
+    print(f"Error connecting to the database: {e}")
