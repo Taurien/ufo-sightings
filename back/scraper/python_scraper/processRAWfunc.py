@@ -59,6 +59,8 @@ def parse_ufo_html(html: str) -> dict:
 
     # Dynamically extract all <b>Label:</b> fields, normalize keys
     b_tags = soup.find_all("b")
+    last_b_tag = None
+
     for b in b_tags:
         label = b.get_text(strip=True).rstrip(":")
         key = label.strip().lower().replace(" ", "_")
@@ -70,32 +72,46 @@ def parse_ufo_html(html: str) -> dict:
             if isinstance(next_sibling, str):
                 value += next_sibling.strip()
             next_sibling = next_sibling.next_sibling
-            result[key] = value
-        else:
-            result[key] = value
+        result[key] = value
+        last_b_tag = b  # Keep track of the last <b> tag
 
-    # Description: after last <b>Characteristics:</b> and before <i>Posted ...</i>
-    chars_b = None
-    for b in reversed(b_tags):
-        if b.get_text(strip=True).lower().startswith("characteristics"):
-            chars_b = b
-            break
+    # Description: Find all <br/><br/> (double line breaks) after the last <b> tag
+    # and collect text until <i>Posted...</i>
     description = []
-    if chars_b:
-        node = chars_b.next_sibling
+
+    if last_b_tag:
+        # Start from the last <b> tag and find the next double <br/>
+        node = last_b_tag
+
+        # Skip forward past the value and find double <br/>
         while node:
-            if getattr(node, "name", None) == "i" and "Posted" in node.get_text():
+            if getattr(node, "name", None) == "br":
+                # Check if next sibling is also a <br/>
+                next_node = node.next_sibling
+                if getattr(next_node, "name", None) == "br":
+                    # Found double <br/>, start collecting from here
+                    node = next_node.next_sibling
+                    break
+            node = node.next_sibling
+
+        # Now collect the description text
+        while node:
+            if getattr(node, "name", None) == "i" and "Posted" in str(
+                getattr(node, "string", "")
+            ):
                 break
             if isinstance(node, str):
-                text = node.replace("\xa0", "").replace("\r", "").replace("\n", "")
-                if text.strip():
+                text = node.strip()
+                if text:
                     description.append(text)
             elif getattr(node, "name", None) == "br":
                 description.append("\n")
             node = node.next_sibling
-        desc = "".join(description).strip()
-        desc = re.sub(r"\n{3,}", "\n\n", desc)
-        result["description"] = desc
+
+        if description:
+            desc = "".join(description).strip()
+            desc = re.sub(r"\n{3,}", "\n\n", desc)
+            result["description"] = desc
 
     # Posted date (always at the end)
     posted_i = soup.find("i", string=re.compile(r"Posted"))

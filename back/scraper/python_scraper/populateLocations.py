@@ -214,7 +214,7 @@ try:
         )
 
         query = select(ufos_table).where(
-            or_(ufos_table.c.location == None, ufos_table.c.location == ""),
+            or_(ufos_table.c.location == None, ufos_table.c.location == None),
         )
         results = session.execute(query).fetchall()
         print(f"Found {len(results)} records with missing location.")
@@ -246,10 +246,9 @@ try:
 
             loc = {}
             if location and location != "":
-                loc["location"] = location
+                loc["area"] = location
             # if location_details and location_details != "":
             #     loc["details"] = location_details
-            loc["fetched"] = True
 
             if coordinates is None:
                 # print("====================")
@@ -266,16 +265,16 @@ try:
                     f"|| {loc} || {coordinates}",
                 )
 
-                # update_stmt = (
-                #     update(ufos_table)
-                #     .where(ufos_table.c.id == ufo_id)
-                #     .values(
-                #         location=loc,
-                #         coordinates=coordinates,
-                #     )
-                # )
-                # session.execute(update_stmt)
-                # session.commit()
+                update_stmt = (
+                    update(ufos_table)
+                    .where(ufos_table.c.id == ufo_id)
+                    .values(
+                        location=loc,
+                        coordinates=coordinates,
+                    )
+                )
+                session.execute(update_stmt)
+                session.commit()
 
 
 except SQLAlchemyError as e:
