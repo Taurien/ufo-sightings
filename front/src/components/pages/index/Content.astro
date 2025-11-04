@@ -1,0 +1,44 @@
+---
+import { Op } from "sequelize";
+import { Ufo } from "../../../models";
+
+import WelcomeDialog from "@/components/WelcomeDialog";
+import MapDrawer from "@/components/pages/index/MapDrawer";
+import Map from "../../map/Map.astro";
+import HeatMap from "../../map/HeatMap.astro";
+import type { only } from "node:test";
+
+// const searchParams = Astro.url.searchParams;
+// console.log(searchParams.get("country"), "searchParams");
+
+let ufos: Ufo[] = [];
+let error: string | null = null;
+
+// try {
+//   ufos = await Ufo.findAll({
+//     where: {
+//       location: {
+//         [Op.ne]: null,
+//         // country: searchParams.get("country"),
+//       },
+//       coordinates: {
+//         [Op.ne]: null,
+//       },
+//     },
+
+//     // order: [["createdAt", "DESC"]],
+//     attributes: ["id", "location", "coordinates"],
+//     raw: true,
+//     limit: 20,
+//   });
+// } catch (e) {
+//   error = e instanceof Error ? e.message : "Unknown error";
+//   console.error("Database error:", e);
+// }
+
+// console.log(ufos, "ufos");
+---
+
+<!-- <WelcomeDialog client:load /> -->
+<Map markers={ufos} height="100vh" width="100vw" />
+<MapDrawer client:load />
