@@ -1,3 +1,19 @@
+"""
+UFO Sighting Report Fetcher
+
+IMPORTANT DISCLAIMER:
+- All UFO sighting data belongs exclusively to the National UFO Reporting Center (NUFORC)
+- This script is for EDUCATIONAL and PERSONAL USE ONLY
+- NO commercial use or income generation intended
+- I perform the data collection myself for personal educational purposes only
+- This project respects NUFORC's intellectual property rights
+
+WARNING: Web scraping may be subject to website terms of service.
+This code is used by me personally for educational learning only.
+
+Created for learning purposes only.
+"""
+
 # Proxy configuration - set to None to disable proxy
 USE_PROXY = True
 proxies = (

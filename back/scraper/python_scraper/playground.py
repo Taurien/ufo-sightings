@@ -1,9 +1,5 @@
-# Database credentials
-hostname = "localhost:3306"
-username = "root"
-password = "Qwerty8975_"
-database = "nuforc"
-
+import os
+from dotenv import load_dotenv
 import sys
 from sqlalchemy import (
     update,
@@ -21,6 +17,14 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import SQLAlchemyError
 from processRAWfunc import process_raw
 
+load_dotenv()
+
+hostname = os.getenv("DB_HOST")
+username = os.getenv("DB_USER")
+password = os.getenv("DB_PASSWORD")
+database = os.getenv("DB_NAME")
+
+
 try:
     engine = create_engine(
         f"mysql+mysqlconnector://{username}:{password}@{hostname}/{database}"
@@ -37,7 +41,7 @@ try:
             # Column("location", JSON, nullable=True),
             # Column("details", JSON, nullable=True),
             # Column("description", Text, nullable=True),
-            Column("RAW", LONGTEXT, nullable=True),
+            # Column("RAW", LONGTEXT, nullable=True),
         )
 
         query = select(ufos_table)
@@ -46,13 +50,21 @@ try:
         results = session.execute(query).fetchall()
 
         for row in results:
-            RAW_data = row[2]
+            print(f"Processing {row}")
+            # location_data = row[1]
+            # print(f"Location data for ID {row[0]}: {location_data.get('area')}")
+
+            # splitted_location = location_data.get("area").split(", ")
+            # country = splitted_location[-1]
+            # location_data["country"] = country
+
+            # RAW_data = row[2]
             # processed_data = process_raw(RAW_data)
 
         #     update_stmt = (
         #         update(ufos_table).where(ufos_table.c.id == row[0])
         #         # .values(details=processed_data.details)
-        #         .values(description=None)
+        #         # .values(description=None)
         #     )
         #     session.execute(update_stmt)
         # session.commit()

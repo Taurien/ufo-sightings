@@ -1,10 +1,7 @@
-# Database credentials
-hostname = "localhost:3306"
-username = "root"
-password = "Qwerty8975_"
-database = "nuforc"
 
 
+import os
+from dotenv import load_dotenv
 from fetchUfo import fetchUfo, last_record_id
 import random
 import sys
@@ -27,6 +24,13 @@ from sqlalchemy import (
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.dialects.mysql import LONGTEXT
+
+load_dotenv()
+
+hostname = os.getenv("DB_HOST")
+username = os.getenv("DB_USER")
+password = os.getenv("DB_PASSWORD")
+database = os.getenv("DB_NAME")
 
 
 def check_missed_records(ufos_table, session):

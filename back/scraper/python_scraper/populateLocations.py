@@ -1,10 +1,5 @@
-# Database credentials
-hostname = "localhost:3306"
-username = "root"
-password = "Qwerty8975_"
-database = "nuforc"
-
 import os
+from dotenv import load_dotenv
 import csv
 import re
 from fetchUfo import fetchUfo
@@ -34,6 +29,13 @@ from sqlalchemy.exc import SQLAlchemyError
 import json
 from geopy.geocoders import Nominatim
 import time
+
+load_dotenv()
+
+hostname = os.getenv("DB_HOST")
+username = os.getenv("DB_USER")
+password = os.getenv("DB_PASSWORD")
+database = os.getenv("DB_NAME")
 
 geolocator = Nominatim(user_agent="nuforc_scraper_app", timeout=10)
 
@@ -138,6 +140,7 @@ def contains_coordinates(location):
 
 
 def get_coordinates(ufo_id, location):
+    print(f"Fetching coordinates for UFO ID {ufo_id} at location: {location}")
 
     result = None
     coordinates = None
@@ -154,18 +157,28 @@ def get_coordinates(ufo_id, location):
 
 def handle_location(ufo_id, location):
     splitted_location = location.split(",")
+    country = splitted_location[-1].strip()
 
-    coordinates = None
+    coordinates = {"country": country}
+    coords = None
 
-    if parens_not_closed(location):
-        # location = fill_cutted_location(location)
-        # return handle_location(ufo_id, location)
-        # export_location_csv(
-        #     "parens_bad.csv",
-        #     ufo_id,
-        #     location,
-        # )
-        test = 2
+    if "(" in location or ")" in location:
+        if parens_not_closed(location):
+            # location = fill_cutted_location(location)
+            # return handle_location(ufo_id, location)
+            # export_location_csv(
+            #     "parens_not_closed.csv",
+            #     ufo_id,
+            #     location,
+            # )
+            test = 2
+        else:
+            # export_location_csv(
+            #     "parens_present.csv",
+            #     ufo_id,
+            #     location,
+            # )
+            test = 2
     else:
         if len(splitted_location) == 1 and (
             splitted_location[0].strip() == ""
@@ -180,19 +193,41 @@ def handle_location(ufo_id, location):
         else:
             if len(splitted_location) > 3:
                 # export_location_csv(
-                #     "filled_more.csv",
+                #     "filled_3_more.csv",
                 #     ufo_id,
                 #     splitted_location,
                 # )
                 test = 2
             elif len(splitted_location) == 3:
-                coordinates = get_coordinates(ufo_id, location)
-            elif len(splitted_location) == 2:
-                coordinates = get_coordinates(ufo_id, location)
-            else:
-                coordinates = get_coordinates(ufo_id, location)
+                coords = get_coordinates(ufo_id, location)
+                # export_location_csv(
+                #     "filled_3.csv",
+                #     ufo_id,
+                #     splitted_location,
+                # )
 
-    return coordinates
+            elif len(splitted_location) == 2:
+                coords = get_coordinates(ufo_id, location)
+                # export_location_csv(
+                #     "filled_2.csv",
+                #     ufo_id,
+                #     splitted_location,
+                # )
+
+            else:
+                # coords = get_coordinates(ufo_id, location)
+                # export_location_csv(
+                #     "filled_1.csv",
+                #     ufo_id,
+                #     splitted_location,
+                # )
+                test = 2
+
+    if coords is None:
+        return None
+    else:
+        coordinates["coords"] = coords
+        return coordinates
 
 
 try:
@@ -213,8 +248,14 @@ try:
             Column("coordinates", JSON, nullable=True),
         )
 
+        # query = select(ufos_table).where(
+        #     or_(ufos_table.c.location == None, ufos_table.c.location == ""),
+        # )
         query = select(ufos_table).where(
-            or_(ufos_table.c.location == None, ufos_table.c.location == None),
+            and_(
+                or_(ufos_table.c.location == None, ufos_table.c.location == ""),
+                ufos_table.c.id >= 104472,
+            )
         )
         results = session.execute(query).fetchall()
         print(f"Found {len(results)} records with missing location.")
@@ -225,7 +266,7 @@ try:
             location = details.get("location", "")
             location_details = details.get("location_details", "")
 
-            coordinates = None
+            coordinates_data = None
 
             if location_details:
                 # if contains_coordinates(location_details):
@@ -242,7 +283,7 @@ try:
                 #     coordinates = handle_location(ufo_id, location)
                 test = 2
             else:
-                coordinates = handle_location(ufo_id, location)
+                coordinates_data = handle_location(ufo_id, location)
 
             loc = {}
             if location and location != "":
@@ -250,7 +291,7 @@ try:
             # if location_details and location_details != "":
             #     loc["details"] = location_details
 
-            if coordinates is None:
+            if coordinates_data is None:
                 # print("====================")
                 # print(f"UFO ID: {ufo_id}")
                 # print(f"Location: {loc}")
@@ -258,19 +299,20 @@ try:
                 test = 2
 
             else:
-                test = 2
-                export_location_csv(
-                    f"filled_3_w_coords.csv",
-                    ufo_id,
-                    f"|| {loc} || {coordinates}",
-                )
 
+                loc["country"] = coordinates_data.get("country")
+
+                export_location_csv(
+                    f"filled.csv",
+                    ufo_id,
+                    f"|| {loc} || {coordinates_data.get('coords')} ",
+                )
                 update_stmt = (
                     update(ufos_table)
                     .where(ufos_table.c.id == ufo_id)
                     .values(
                         location=loc,
-                        coordinates=coordinates,
+                        coordinates=coordinates_data.get("coords"),
                     )
                 )
                 session.execute(update_stmt)
