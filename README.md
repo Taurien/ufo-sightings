@@ -1,6 +1,10 @@
 # UFO Sightings Data Scraper & Interactive Map 🛸
 
-A comprehensive UFO sightings data collection and visualization platform that scrapes reports from NUFORC, processes them through automated pipelines, and presents them via an interactive web interface with Google Maps integration.
+**⚠️ EDUCATIONAL PROJECT ONLY - NON-COMMERCIAL USE**
+
+A comprehensive UFO sightings data collection and visualization platform that processes UFO reports, implements automated pipelines, and presents them via an interactive web interface with Google Maps integration.
+
+**IMPORTANT**: All data belongs to the [National UFO Reporting Center (NUFORC)](https://nuforc.org/). This project is built purely for personal learning and experimentation with no commercial intent. I perform the data collection myself for educational purposes only.
 
 ## 🌟 Features
 
@@ -205,20 +209,23 @@ crontab -e
 
 ## 📝 License
 
-This project is created for educational and research purposes. Please respect the terms of use of the original data sources.
+This project code is provided as-is for educational purposes only. The UFO sighting data remains the property of NUFORC and is subject to their terms of use. No commercial use is permitted.
 
-## ⚠️ Disclaimer
+## ⚠️ IMPORTANT DISCLAIMER
 
-- This project was built **for fun, learning, and experimentation**
-- The UFO sighting dataset does **not** belong to me
-- Reports were originally compiled by the [National UFO Reporting Center (NUFORC)](https://nuforc.org/)
-- The dataset was later made **publicly accessible by a third party** on [Kaggle](https://www.kaggle.com/datasets/NUFORC/ufo-sightings)
-- Use responsibly and respect the source website's robots.txt and terms of service
+**This project is strictly for educational, personal, and non-commercial purposes.**
 
-## 🔗 Related Projects
+### Data Ownership & Attribution
 
-- **N8N Workflows**: Automated data processing pipelines
-- **SQL Analysis Tools**: Database analysis and reporting utilities
+- **ALL UFO sighting data belongs exclusively to the [National UFO Reporting Center (NUFORC)](https://nuforc.org/)**
+- This project does **NOT** claim any ownership over the data
+- All reports and materials are the intellectual property of NUFORC
+
+### Project Purpose
+
+- Built **solely for learning, experimentation, and personal enjoyment**
+- **NO commercial use, monetization, or income generation intended**
+- Created as a personal educational project to learn web scraping, data processing, and visualization
 
 ---
 

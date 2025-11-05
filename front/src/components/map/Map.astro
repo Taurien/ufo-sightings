@@ -3,18 +3,12 @@ import { fade } from "astro:transitions";
 import LeafletMap from "./LeafletMap";
 import HeatMap from "./HeatMap.astro";
 
-const { markers, height, width } = Astro.props;
+const { markers } = Astro.props;
 
 const MAPBOX_TOKEN = import.meta.env.PUBLIC_MAPBOX_TOKEN;
 ---
 
 <div class="w-full">
-  <LeafletMap
-    client:only="react"
-    markers={markers}
-    height={height}
-    width={height}
-  />
-
+  <LeafletMap client:only="react" markers={markers} />
   <!-- <HeatMap accessToken={MAPBOX_TOKEN} /> -->
 </div>

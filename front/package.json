@@ -1,7 +1,10 @@
 {
-  "name": "second-shepherd",
+  "name": "ufo-sightings-map",
   "type": "module",
   "version": "0.0.1",
+  "description": "Educational UFO sightings visualization. All data belongs to NUFORC. Non-commercial use only.",
+  "license": "SEE LICENSE FILE",
+  "private": true,
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",

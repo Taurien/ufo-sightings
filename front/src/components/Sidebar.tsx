@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/sidebar";
 
 export function AppSidebar() {
-  const { open } = useSidebar();
+  const { open, openMobile, isMobile } = useSidebar();
 
   const items = [
     {
@@ -33,7 +33,11 @@ export function AppSidebar() {
 
   return (
     <>
+      {isMobile && !openMobile && (
+        <SidebarTrigger className="absolute z-1000 bottom-12 left-2 bg-white rounded-full" />
+      )}
       <Sidebar>
+        <SidebarTrigger className="absolute top-1/2 -translate-y-1/2 -right-3 bg-white rounded-full" />
         <SidebarHeader>{!open ? "US" : "UFOS"}</SidebarHeader>
         <SidebarContent>
           <SidebarGroup>
@@ -54,7 +58,6 @@ export function AppSidebar() {
             </SidebarGroupContent>
           </SidebarGroup>
         </SidebarContent>
-        <SidebarTrigger className={!open ? "mx-auto" : "ml-auto"} />
         <SidebarFooter>
           <a
             href="https://github.com/Taurien/ufo-sightings"
@@ -63,7 +66,7 @@ export function AppSidebar() {
             className="p-1.5 text-xs text-center text-white bg-black rounded-full hover:underline"
           >
             {!open ? (
-              ""
+              "X"
             ) : (
               <>
                 Built by <span className="font-medium">Taurien</span>

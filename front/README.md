@@ -1,10 +1,18 @@
-# Astro Starter Kit: Basics
+# UFO Sightings Interactive Map - Frontend
 
-```sh
-pnpm create astro@latest -- --template basics
-```
+**⚠️ EDUCATIONAL PROJECT ONLY - NON-COMMERCIAL USE**
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## Important Disclaimer
+
+**ALL UFO SIGHTING DATA BELONGS TO THE NATIONAL UFO REPORTING CENTER (NUFORC)**
+
+- This web application displays UFO sighting data that is the exclusive property of [NUFORC](https://nuforc.org/)
+- Built **strictly for personal learning and educational purposes**
+- **NO commercial use or income generation intended**
+- This project respects NUFORC's intellectual property rights
+- Data collection is performed by me personally for educational purposes only
+
+---
 
 ## 🚀 Project Structure
 
@@ -32,9 +40,9 @@ To learn more about the folder structure of an Astro project, refer to [our guid
 
 All commands are run from the root of the project, from a terminal:
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `pnpm install`             | Installs dependencies                            |
+| Command                | Action                                           |
+| :--------------------- | :----------------------------------------------- |
+| `pnpm install`         | Installs dependencies                            |
 | `pnpm dev`             | Starts local dev server at `localhost:4321`      |
 | `pnpm build`           | Build your production site to `./dist/`          |
 | `pnpm preview`         | Preview your build locally, before deploying     |

@@ -30,49 +30,48 @@ L.Icon.Default.mergeOptions({
 
 interface LeafletMapProps {
   markers: [];
-  height: string;
-  width: string;
+
   center?: [number, number];
   zoom?: number;
 }
 
 export default function LeafletMap({
   markers,
-  height,
-  width,
+
   center = [0, -0],
   zoom = 2,
 }: LeafletMapProps) {
   return (
-    <MapContainer
-      className="w-full"
-      center={center}
-      zoom={zoom}
-      style={{ height, width: "100%" }}
-      zoomControl={false}
-    >
-      <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-      />
-      <ZoomControl position="bottomright" />
-      {markers.map((m: Ufo) => (
-        <Circle
-          key={m.id}
-          center={[m.coordinates!.latitude, m.coordinates!.longitude]}
-          radius={5000}
-          color="green"
-        >
-          <Marker
-            position={[m.coordinates!.latitude, m.coordinates!.longitude]}
+    <div className=" h-full relative z-0">
+      <MapContainer
+        center={center}
+        zoom={zoom}
+        style={{ height: "100%", width: "100%" }}
+        zoomControl={false}
+      >
+        <TileLayer
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> |  <a href="https://nuforc.org">National UFO Reporting Center</a>'
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        />
+        <ZoomControl position="bottomright" />
+        {markers.map((m: Ufo) => (
+          <Circle
+            key={m.id}
+            center={[m.coordinates!.latitude, m.coordinates!.longitude]}
+            radius={5000}
+            color="green"
           >
-            <Popup>
-              UFO Sighting at {m.coordinates!.latitude},{" "}
-              {m.coordinates!.longitude}
-            </Popup>
-          </Marker>
-        </Circle>
-      ))}
-    </MapContainer>
+            <Marker
+              position={[m.coordinates!.latitude, m.coordinates!.longitude]}
+            >
+              <Popup>
+                UFO Sighting at {m.coordinates!.latitude},{" "}
+                {m.coordinates!.longitude}
+              </Popup>
+            </Marker>
+          </Circle>
+        ))}
+      </MapContainer>
+    </div>
   );
 }

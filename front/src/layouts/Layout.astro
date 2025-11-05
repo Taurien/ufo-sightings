@@ -1,7 +1,20 @@
 ---
+/**
+ * UFO Sightings Interactive Map - Layout Component
+ *
+ * IMPORTANT DISCLAIMER:
+ * - All UFO sighting data belongs exclusively to the National UFO Reporting Center (NUFORC)
+ * - This web application is for EDUCATIONAL and PERSONAL USE ONLY
+ * - NO commercial use or income generation intended
+ * - This project respects NUFORC's terms of service and intellectual property rights
+ *
+ * Created for learning purposes only.
+ */
+
 import "../styles/global.css";
 
-import { ProvidersWrapper } from "@/components/ProvidersWrapper";
+import { LayoutWrapper } from "@/components/LayoutWrapper";
+import { WelcomeDisclaimer } from "@/components/WelcomeDisclaimer";
 
 const { title, style } = Astro.props;
 ---
@@ -9,10 +22,25 @@ const { title, style } = Astro.props;
 <!doctype html>
 <html lang="en">
   <head>
+    <!--
+      UFO Sightings Interactive Map - Layout Component
+
+      IMPORTANT DISCLAIMER:
+      - All UFO sighting data belongs exclusively to the National UFO Reporting Center (NUFORC)
+      - This web application is for EDUCATIONAL and PERSONAL USE ONLY
+      - NO commercial use or income generation intended
+      - This project respects NUFORC's terms of service and intellectual property rights
+      
+      Created for learning purposes only.
+    -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
+    <meta
+      name="description"
+      content="Educational UFO sightings visualization. Data belongs to NUFORC. Non-commercial use only."
+    />
     <title>UFOS | {title}</title>
 
     <!-- <link
@@ -24,9 +52,10 @@ const { title, style } = Astro.props;
     <!-- <script src="https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.js"
     ></script> -->
 
-    <ProvidersWrapper client:load>
+    <LayoutWrapper client:load>
+      <WelcomeDisclaimer client:load />
       <slot />
-    </ProvidersWrapper>
+    </LayoutWrapper>
   </body>
 </html>
 
